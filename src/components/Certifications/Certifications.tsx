@@ -100,7 +100,7 @@ const certifications: Certification[] = [
     title: 'Crash Course on Python',
     issuer: 'Google',
     date: 'Dec 2024',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
     credentialId: 'QJXQ5S4V4Q6W',
     credentialUrl: 'https://www.coursera.org/account/accomplishments/verify/QJXQ5S4V4Q6W',
     skills: ['Python', 'Programming Fundamentals']
