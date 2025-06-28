@@ -49,7 +49,7 @@ const Contact = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) {
@@ -58,32 +58,10 @@ const Contact = () => {
     
     setLoading(true);
     
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        setSnackbarMessage('Message sent successfully! I\'ll get back to you soon.');
-        setSnackbarSeverity('success');
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        throw new Error(data.error || 'Failed to send message');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setSnackbarMessage(error instanceof Error ? error.message : 'Failed to send message');
-      setSnackbarSeverity('error');
-    } finally {
-      setLoading(false);
-      setOpenSnackbar(true);
-    }
+    // The form will be submitted by the browser to FormSubmit
+    // This function is only for client-side validation
+    const form = e.target as HTMLFormElement;
+    form.submit();
   };
 
   const handleCloseSnackbar = () => {
@@ -235,17 +213,26 @@ const Contact = () => {
           >
             <Box
               component="form"
+              action={`https://formsubmit.co/${encodeURIComponent('saketh.jangala@outlook.com')}`}
+              method="POST"
               onSubmit={handleSubmit}
               sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1.5rem',
+                width: '100%',
+                '& .MuiTextField-root': { mb: 2 },
                 backgroundColor: theme.palette.background.paper,
-                padding: '2rem',
-                borderRadius: '8px',
+                padding: 3,
+                borderRadius: 2,
                 boxShadow: '0 10px 30px -15px rgba(2, 12, 27, 0.7)',
               }}
             >
+              {/* FormSubmit Configuration */}
+              <input type="hidden" name="_subject" value="New message from portfolio contact form" />
+              <input type="hidden" name="_next" value={`${window.location.origin}/thank-you`} />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_autoresponse" value="Thank you for your message! I'll get back to you as soon as possible." />
+              <input type="text" name="_honey" style={{ display: 'none' }} />
+              <input type="hidden" name="_blacklist" value="spam, viagra, bitcoin" />
               <TextField
                 label="Name"
                 name="name"
