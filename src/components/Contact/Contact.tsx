@@ -14,10 +14,11 @@ const Contact = () => {
     email: '',
     message: '',
   });
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info'>('success');
+  const [errors, setErrors] = useState<{name?: string; email?: string; message?: string}>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -27,11 +28,62 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const newErrors: {name?: string; email?: string; message?: string} = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSnackbarMessage('Contact form is currently disabled. Please reach out via email or LinkedIn.');
-    setSnackbarSeverity('info');
-    setOpenSnackbar(true);
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setSnackbarMessage('Message sent successfully! I\'ll get back to you soon.');
+        setSnackbarSeverity('success');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        throw new Error(data.error || 'Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setSnackbarMessage(error instanceof Error ? error.message : 'Failed to send message');
+      setSnackbarSeverity('error');
+    } finally {
+      setLoading(false);
+      setOpenSnackbar(true);
+    }
   };
 
   const handleCloseSnackbar = () => {
@@ -199,7 +251,11 @@ const Contact = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                error={!!errors.name}
+                helperText={errors.name}
+                disabled={loading}
                 fullWidth
+                margin="normal"
                 required
                 variant="outlined"
                 sx={{
@@ -233,7 +289,11 @@ const Contact = () => {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
+                error={!!errors.email}
+                helperText={errors.email}
+                disabled={loading}
                 fullWidth
+                margin="normal"
                 required
                 variant="outlined"
                 sx={{
@@ -266,10 +326,14 @@ const Contact = () => {
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                fullWidth
-                required
+                error={!!errors.message}
+                helperText={errors.message}
+                disabled={loading}
                 multiline
                 rows={6}
+                fullWidth
+                margin="normal"
+                required
                 variant="outlined"
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -299,22 +363,25 @@ const Contact = () => {
               <Button
                 type="submit"
                 variant="contained"
+                color="primary"
+                size="large"
                 disabled={loading}
                 sx={{
-                  alignSelf: 'flex-start',
-                  padding: '0.75rem 2rem',
-                  backgroundColor: 'transparent',
-                  color: theme.palette.primary.main,
-                  border: `1px solid ${theme.palette.primary.main}`,
-                  borderRadius: '4px',
-                  textTransform: 'none',
+                  marginTop: '1rem',
+                  padding: '0.8rem 2rem',
                   fontSize: '1rem',
-                  fontWeight: 500,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  borderRadius: '4px',
                   '&:hover': {
-                    backgroundColor: 'rgba(100, 255, 218, 0.1)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: `0 4px 20px ${theme.palette.primary.main}33`,
                   },
-                  '&:disabled': {
-                    opacity: 0.5,
+                  transition: 'all 0.3s ease',
+                  '&.Mui-disabled': {
+                    backgroundColor: theme.palette.primary.main,
+                    color: theme.palette.primary.contrastText,
+                    opacity: 0.7,
                   },
                 }}
               >
