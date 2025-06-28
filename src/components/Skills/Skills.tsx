@@ -3,15 +3,13 @@ import {
   Box, 
   Typography, 
   useTheme, 
-  useMediaQuery, 
   Paper, 
-  Tooltip, 
-  PaperProps, 
-  SxProps, 
-  Theme 
+  useMediaQuery,
+  Fade
 } from '@mui/material';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { styled } from '@mui/material/styles';
+import SectionHeader from '../common/SectionHeader';
+import TabSystem, { TabItem } from '../common/TabSystem';
 
 interface SkillItemType {
   name: string;
@@ -20,7 +18,7 @@ interface SkillItemType {
 
 interface SkillGroup {
   category: string;
-  icon?: string;
+  icon: string;
   items: SkillItemType[];
 }
 
@@ -76,29 +74,7 @@ const skills: SkillGroup[] = [
   },
 ];
 
-interface CustomCSSProperties extends React.CSSProperties {
-  '--progress'?: string;
-  '--gradient'?: string;
-}
-
-const StyledSkillItem = styled(Paper)<PaperProps>(({ theme }) => ({
-  padding: theme.spacing(4),
-  borderRadius: theme.shape.borderRadius * 2,
-  transition: 'all 0.3s ease',
-  height: '100%',
-  '&:hover': {
-    transform: 'translateY(-5px)',
-    boxShadow: theme.shadows[8],
-    '& .skill-icon-container': {
-      transform: 'scale(1.1)',
-      background: theme.palette.mode === 'dark' 
-        ? 'rgba(255, 255, 255, 0.1)' 
-        : 'rgba(0, 0, 0, 0.05)',
-    },
-  },
-}));
-
-const SkillBar = styled(motion.div)(({ theme }: { theme: Theme }) => ({
+const SkillBar = styled('div')(({ theme }) => ({
   width: '100%',
   height: '8px',
   backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
@@ -111,12 +87,9 @@ const SkillBar = styled(motion.div)(({ theme }: { theme: Theme }) => ({
     top: 0,
     left: 0,
     bottom: 0,
-    width: 'var(--progress, 0%)',
-    background: 'var(--gradient)',
-    transformOrigin: 'left',
-    transition: 'width 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s ease',
+    width: '0%',
     borderRadius: '4px',
-    boxShadow: `0 0 10px ${theme.palette.primary.main}80`,
+    transition: 'width 1s ease',
   },
   '&:hover:before': {
     transform: 'scaleY(1.2)',
@@ -124,287 +97,199 @@ const SkillBar = styled(motion.div)(({ theme }: { theme: Theme }) => ({
   }
 }));
 
-const SkillItem = styled(Paper)(({ theme }: { theme: Theme }) => ({
-  padding: '1.8rem',
-  borderRadius: '12px',
+const StyledSkillItem = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  borderRadius: theme.shape.borderRadius * 2,
+  transition: 'all 0.3s ease',
   height: '100%',
-  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-  background: theme.palette.mode === 'dark' 
-    ? 'rgba(30, 30, 40, 0.7)' 
-    : 'rgba(255, 255, 255, 0.8)',
-  border: `1px solid ${theme.palette.divider}`,
-  backdropFilter: 'blur(10px)',
-  overflow: 'hidden',
   position: 'relative',
-  '&:before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: '3px',
-    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary?.main || theme.palette.primary.light})`,
-    transform: 'scaleX(0)',
-    transformOrigin: 'left',
-    transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-  },
   '&:hover': {
-    transform: 'translateY(-8px) scale(1.02)',
-    boxShadow: `0 20px 40px -15px ${theme.palette.primary.main}30`,
-    borderColor: theme.palette.primary.main,
-    '&:before': {
-      transform: 'scaleX(1)',
-    },
+    transform: 'translateY(-4px)',
+    boxShadow: theme.shadows[8],
     '& .skill-icon-container': {
-      transform: 'scale(1.1) rotate(5deg)',
-      backgroundColor: `${theme.palette.primary.main}25`,
-    }
+      transform: 'scale(1.1)',
+      background: theme.palette.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.1)' 
+        : 'rgba(0, 0, 0, 0.05)',
+    },
   },
-  '&:active': {
-    transform: 'translateY(-4px) scale(1.01)',
-  }
 }));
 
-const Skills = () => {
-  const [hoveredSkill, setHoveredSkill] = useState<number | null>(null);
+const Skills: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref as unknown as React.RefObject<Element>, { once: true, amount: 0.2 });
+  const [selectedTab, setSelectedTab] = useState<string>('all');
   
-  // Gradient colors for the skill bars
+  // Animation delay for staggered animations
+  const getDelay = (index: number) => index * 100; // ms
+  
+  const skillTabs: TabItem[] = [
+    { value: 'all', label: 'All Skills' },
+    ...skills.map(skill => ({
+      value: skill.category.toLowerCase(),
+      label: skill.category,
+      icon: <span>{skill.icon}</span>
+    }))
+  ];
+  
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setSelectedTab(newValue);
+  };
+  
+  const filteredSkills = selectedTab === 'all' 
+    ? skills 
+    : skills.filter(skill => skill.category.toLowerCase() === selectedTab);
+  
   const getGradient = (level: number) => {
     if (level >= 90) return `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`;
     if (level >= 70) return `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light}90)`;
     return `linear-gradient(90deg, ${theme.palette.primary.main}90, ${theme.palette.primary.light}70)`;
   };
-
-  // Animation variants for the skill bars
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.5,
-        ease: 'easeOut'
-      }
-    })
-  };
-
-  // Grid layout based on screen size
-  const getGridTemplateColumns = () => {
-    if (isMobile) return '1fr';
-    return 'repeat(auto-fit, minmax(300px, 1fr))';
-  };
+  
+  // Apply animation after component mounts
+  React.useEffect(() => {
+    const skillBars = document.querySelectorAll('.skill-bar-fill');
+    skillBars.forEach((bar, index) => {
+      setTimeout(() => {
+        const width = bar.getAttribute('data-level');
+        if (width) {
+          (bar as HTMLElement).style.width = `${width}%`;
+        }
+      }, index * 100);
+    });
+  }, [selectedTab]);
 
   return (
-    <Box
-      ref={ref}
-      id="skills"
-      sx={{
-        minHeight: '100vh',
-        py: 8,
-        px: { xs: 2, sm: 4, md: 6 },
-        background: theme.palette.background.default,
+    <Box 
+      id="skills" 
+      ref={ref} 
+      component="section"
+      sx={{ 
+        py: { xs: 6, md: 10 },
         position: 'relative',
-        overflow: 'hidden',
+        bgcolor: 'background.default',
+        scrollMarginTop: '80px',
       }}
     >
-      {/* Background elements */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `radial-gradient(circle at 20% 30%, ${theme.palette.primary.light}10 0%, transparent 25%),
-                      radial-gradient(circle at 80% 70%, ${theme.palette.secondary?.light || theme.palette.primary.light}10 0%, transparent 25%)`,
-          zIndex: 0,
-        }}
-      />
-
-      {/* Content */}
-      <Box
-        sx={{
-          position: 'relative',
-          zIndex: 1,
-          maxWidth: 1400,
-          mx: 'auto',
-        }}
-      >
-        {/* Section Header */}
-        <Box
-          component={motion.div}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6 }}
-          sx={{
-            textAlign: 'center',
-            mb: 6,
-          }}
-        >
-          <Typography
-            variant="h2"
-            component="h2"
-            sx={{
-              fontSize: { xs: '2.5rem', md: '3.5rem' },
-              fontWeight: 700,
-              mb: 2,
-              background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary?.main || theme.palette.primary.light})`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              display: 'inline-block',
-            }}
-          >
-            Skills & Expertise
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              color: 'text.secondary',
-              maxWidth: '700px',
-              mx: 'auto',
-              lineHeight: 1.7,
-            }}
-          >
-            Here are the technologies and tools I work with on a daily basis.
-          </Typography>
+      <Box sx={{ 
+        maxWidth: '1400px', 
+        mx: 'auto',
+        px: { xs: 3, md: 4, lg: 6 },
+        position: 'relative',
+        zIndex: 1,
+      }}>
+        <SectionHeader 
+          title="Skills & Expertise"
+          subtitle="Technologies and tools I'm proficient in and use regularly to build amazing applications."
+          gradientColors={[theme.palette.primary.main, theme.palette.secondary.main]}
+        />
+        
+        <Box sx={{ mt: 6, mb: 8 }}>
+          <TabSystem
+            value={selectedTab}
+            onChange={handleTabChange}
+            tabs={skillTabs}
+            variant="scrollable"
+            scrollButtons="auto"
+            fullWidth={isMobile}
+          />
         </Box>
 
         {/* Skills Grid */}
         <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: getGridTemplateColumns(),
-            gap: 3,
-            mt: 6,
+          sx={{ 
+            display: 'grid', 
+            gridTemplateColumns: { 
+              xs: '1fr', 
+              sm: 'repeat(2, 1fr)', 
+              lg: 'repeat(3, 1fr)' 
+            }, 
+            gap: 4,
+            '& > *': {
+              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-5px)',
+                boxShadow: theme.shadows[8],
+              }
+            }
           }}
         >
-          {skills.map((group, groupIndex) => (
-            <Box
+          {filteredSkills.map((group, groupIndex) => (
+            <Fade 
               key={group.category}
-              component={motion.div}
-              custom={groupIndex}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={containerVariants}
-              onHoverStart={() => setHoveredSkill(groupIndex)}
-              onHoverEnd={() => setHoveredSkill(null)}
-              sx={{ height: '100%' }}
+              in={true}
+              timeout={500}
+              style={{ transitionDelay: `${getDelay(groupIndex)}ms` }}
             >
-              <StyledSkillItem>
               <Box
-                className="skill-icon-container"
                 sx={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: '50%',
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  mb: 2,
-                  transition: 'all 0.3s ease',
-                  background: theme.palette.mode === 'dark' 
-                    ? 'rgba(255, 255, 255, 0.05)' 
-                    : 'rgba(0, 0, 0, 0.02)',
-                  fontSize: '1.8rem',
+                  flexDirection: 'column',
+                  gap: 2,
+                  height: '100%',
                 }}
               >
-                {group.icon}
-              </Box>
-              
-              <Typography
-                variant="h5"
-                component="h3"
-                sx={{
-                  fontWeight: 600,
-                  mb: 3,
-                  position: 'relative',
-                  display: 'inline-block',
-                  '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: -8,
-                    left: 0,
-                    width: '40px',
-                    height: '3px',
-                    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary?.main || theme.palette.primary.light})`,
-                    borderRadius: '3px',
-                  },
-                }}
-              >
-                {group.category}
-              </Typography>
-
-              <Box sx={{ mt: 2 }}>
-                {group.items.map((skill, skillIndex) => (
-                  <Box key={skill.name} sx={{ mb: 2.5 }}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mb: 0.5,
-                      }}
-                    >
-                      <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                        {skill.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {skill.level}%
-                      </Typography>
-                    </Box>
-                    <Tooltip title={`${skill.level}%`} placement="top" arrow>
-                      <Box
-                        className="skill-bar-container"
-                        sx={{
-                          position: 'relative',
-                          overflow: 'hidden',
-                          borderRadius: '4px',
-                          '&:before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            background: theme.palette.mode === 'dark' 
-                              ? 'rgba(255, 255, 255, 0.05)' 
-                              : 'rgba(0, 0, 0, 0.05)',
-                            transform: 'scaleX(0)',
-                            transformOrigin: 'left',
-                            transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-                            pointerEvents: 'none',
-                          },
-                        }}
-                      >
-                        <SkillBar 
-                          style={{
-                            '--progress': isInView ? `${skill.level}%` : '0%',
-                            '--gradient': getGradient(skill.level),
-                          } as CustomCSSProperties}
-                          initial={false}
-                          animate={{
-                            opacity: isInView ? 1 : 0.5,
-                          }}
-                          transition={{
-                            duration: 1.5,
-                            delay: 0.1 * skillIndex,
-                            ease: [0.16, 1, 0.3, 1]
-                          }}
-                        />
-                      </Box>
-                    </Tooltip>
+                <StyledSkillItem>
+                  <Box
+                    className="skill-icon-container"
+                    sx={{
+                      width: 60,
+                      height: 60,
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mb: 2,
+                      transition: 'all 0.3s ease',
+                      background: theme.palette.mode === 'dark' 
+                        ? 'rgba(255, 255, 255, 0.05)' 
+                        : 'rgba(0, 0, 0, 0.02)',
+                      '& svg': {
+                        fontSize: 30,
+                        color: theme.palette.primary.main,
+                      },
+                    }}
+                  >
+                    {group.icon}
                   </Box>
-                ))}
+                  <Typography variant="h6" component="h3" sx={{ mb: 2, fontWeight: 600 }}>
+                    {group.category}
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {group.items.map((skill, skillIndex) => (
+                      <Box key={skill.name}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {skill.name}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {skill.level}%
+                          </Typography>
+                        </Box>
+                        <SkillBar>
+                          <Box
+                            className="skill-bar-fill"
+                            data-level={skill.level}
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              height: '100%',
+                              width: 0, // Will be set by the useEffect
+                              borderRadius: 4,
+                              background: getGradient(skill.level),
+                              boxShadow: `0 0 10px ${theme.palette.primary.main}40`,
+                              transition: `width 1s ease ${getDelay(skillIndex)}ms`,
+                            }}
+                          />
+                        </SkillBar>
+                      </Box>
+                    ))}
+                  </Box>
+                </StyledSkillItem>
               </Box>
-              </StyledSkillItem>
-            </Box>
+            </Fade>
           ))}
         </Box>
       </Box>
