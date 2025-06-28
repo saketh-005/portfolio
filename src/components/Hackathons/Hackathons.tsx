@@ -144,40 +144,35 @@ const Hackathons: React.FC = () => {
   }, [filter, hackathons]);
 
   return (
-    <Box 
-      id="hackathons" 
-      sx={{ 
-        py: { xs: 4, md: 8 },
-        px: { xs: 2, sm: 4, md: 6, lg: 8, xl: 12 },
-        maxWidth: '1400px',
-        mx: 'auto'
+    <Box
+      id="hackathons"
+      sx={{
+        padding: isMobile ? '5rem 1rem' : '6rem 10%',
+        backgroundColor: theme.palette.background.default,
       }}
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.5 }}
       >
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            mb: 6,
-            width: '100%'
-          }}
-        >
-          <Typography 
-            variant="h2" 
-            sx={{ 
+        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '4rem' }}>
+          <Typography
+            variant="h2"
+            sx={{
               fontSize: { xs: '1.8rem', md: '2.5rem' },
-              fontWeight: 700,
+              fontWeight: 600,
               color: theme.palette.text.primary,
               whiteSpace: 'nowrap',
-              mr: 2
+              mr: 2,
+              '& span': {
+                color: theme.palette.primary.main,
+                marginRight: '0.5rem'
+              }
             }}
           >
-            <span style={{ color: theme.palette.primary.main }}>05.</span> Hackathons
+            <span>05.</span> Hackathons
           </Typography>
           <Box 
             sx={{ 
@@ -250,14 +245,19 @@ const Hackathons: React.FC = () => {
 
       {/* Hackathons Grid */}
       <Box 
-        sx={{
+        sx={{ 
           display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-            lg: 'repeat(3, 1fr)'
+          gridTemplateColumns: { 
+            xs: '1fr', 
+            sm: 'repeat(2, 1fr)', 
+            md: 'repeat(3, 1fr)' 
           },
-          gap: '2rem',
+          gap: { xs: '2rem', md: '1.5rem' },
+          marginTop: '2rem',
+          '& > *': {
+            width: '100%',
+            height: '100%'
+          }
         }}
       >
         {filteredHackathons.map((hackathon) => (
@@ -266,20 +266,25 @@ const Hackathons: React.FC = () => {
             whileHover={{ y: -5 }}
             transition={{ duration: 0.3 }}
           >
-            <Card 
-              sx={{ 
+            <Card
+              elevation={0}
+              sx={{
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                borderRadius: 2,
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                transition: 'transform 0.3s, box-shadow 0.3s',
-                backgroundColor: theme.palette.background.paper,
+                backgroundColor: theme.palette.mode === 'dark' 
+                  ? 'rgba(30, 30, 30, 0.5)' 
+                  : 'rgba(255, 255, 255, 0.7)',
+                backdropFilter: 'blur(10px)',
                 border: `1px solid ${theme.palette.divider}`,
+                borderRadius: '8px',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
-                  boxShadow: '0 12px 24px rgba(0, 0, 0, 0.15)',
-                  borderColor: theme.palette.primary.light,
+                  transform: 'translateY(-5px)',
+                  boxShadow: `0 10px 20px ${theme.palette.primary.main}20`,
+                  borderColor: theme.palette.primary.main,
                 },
+                overflow: 'hidden',
               }}
             >
               <CardMedia
@@ -293,59 +298,124 @@ const Hackathons: React.FC = () => {
                   borderTopRightRadius: '8px',
                 }}
               />
-              <CardContent sx={{ flexGrow: 1, p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
-                  <Typography variant="h6" component="h3" sx={{ 
-                    fontWeight: 700, 
-                    lineHeight: 1.3,
-                    fontSize: '1.1rem',
-                    color: theme.palette.text.primary,
-                    mb: 0.5
+              <CardContent sx={{ 
+                flexGrow: 1, 
+                p: { xs: '1.25rem', sm: '1.5rem' },
+                '&:last-child': { pb: { xs: '1.25rem', sm: '1.5rem' } }
+              }}>
+                <Box sx={{ mb: '1.5rem' }}>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'flex-start',
+                    gap: '0.75rem',
+                    mb: '0.75rem'
                   }}>
-                    {hackathon.project}
+                    <Typography 
+                      variant="h6" 
+                      component="h3"
+                      sx={{ 
+                        fontSize: '1.1rem',
+                        fontWeight: 600,
+                        color: theme.palette.text.primary,
+                        lineHeight: 1.4,
+                        m: 0
+                      }}
+                    >
+                      {hackathon.title}
+                    </Typography>
+                    <Chip 
+                      label={hackathon.date} 
+                      size="small" 
+                      sx={{ 
+                        backgroundColor: theme.palette.mode === 'dark' 
+                          ? 'rgba(255, 255, 255, 0.08)' 
+                          : 'rgba(0, 0, 0, 0.05)',
+                        color: theme.palette.text.secondary,
+                        fontWeight: 500,
+                        fontSize: '0.7rem',
+                        height: '22px',
+                        minWidth: 'fit-content',
+                        flexShrink: 0
+                      }} 
+                    />
+                  </Box>
+
+                  <Typography 
+                    variant="subtitle2" 
+                    color="text.secondary"
+                    sx={{ 
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      lineHeight: 1.5,
+                      mb: '1rem'
+                    }}
+                  >
+                    {hackathon.organizer}
                   </Typography>
-                  {hackathon.awards && hackathon.awards.length > 0 && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-                      <EmojiEventsIcon fontSize="small" color="warning" />
+
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary"
+                    sx={{ 
+                      fontSize: '0.9375rem',
+                      lineHeight: 1.7,
+                      mb: '1.5rem',
+                      WebkitLineClamp: 3,
+                      display: '-webkit-box',
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}
+                  >
+                    {hackathon.description}
+                  </Typography>
+
+                  <Box sx={{ 
+                    p: '1rem', 
+                    backgroundColor: theme.palette.mode === 'dark' 
+                      ? 'rgba(255, 255, 255, 0.03)' 
+                      : 'rgba(0, 0, 0, 0.02)', 
+                    borderRadius: '6px',
+                    border: `1px solid ${theme.palette.divider}`,
+                    mb: '1.5rem'
+                  }}>
+                    <Typography 
+                      variant="caption" 
+                      color="text.secondary" 
+                      sx={{ 
+                        display: 'block', 
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        fontSize: '0.7rem',
+                        mb: '0.5rem'
+                      }}
+                    >
+                      Project
+                    </Typography>
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        fontWeight: 600, 
+                        mb: '0.75rem',
+                        fontSize: '1rem'
+                      }}
+                    >
+                      {hackathon.project}
+                    </Typography>
+                    
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '0.5rem',
+                      color: theme.palette.text.secondary
+                    }}>
+                      <GroupsIcon fontSize="small" />
+                      <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
+                        {hackathon.role}
+                      </Typography>
                     </Box>
-                  )}
-                </Box>
-                
-                <Typography variant="subtitle2" color="primary" sx={{ 
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  mb: 1.5,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 0.5
-                }}>
-                  <GroupsIcon fontSize="inherit" />
-                  {hackathon.organizer}
-                </Typography>
-                
-                <Typography variant="body2" color="text.secondary" sx={{ 
-                  mb: 2, 
-                  fontSize: '0.9rem',
-                  lineHeight: 1.5,
-                  flexGrow: 1
-                }}>
-                  {hackathon.description}
-                </Typography>
-                
-                <Box sx={{ 
-                  backgroundColor: theme.palette.action.hover,
-                  p: 1.5,
-                  borderRadius: 1,
-                  mb: 2,
-                  borderLeft: `3px solid ${theme.palette.primary.main}`
-                }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                    <Typography variant="caption" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-                      Role
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {hackathon.role}
-                    </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="caption" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
@@ -416,78 +486,60 @@ const Hackathons: React.FC = () => {
                         key={index}
                         label={tech}
                         size="small"
-                        variant="outlined"
                         sx={{
                           fontSize: '0.7rem',
                           height: '24px',
+                          backgroundColor: theme.palette.mode === 'dark'
+                            ? 'rgba(255, 255, 255, 0.1)'
+                            : 'rgba(0, 0, 0, 0.05)',
+                          color: theme.palette.text.primary,
                           '& .MuiChip-label': {
                             px: 1,
                           },
-                          backgroundColor: theme.palette.background.paper,
-                          borderColor: theme.palette.divider,
-                          color: theme.palette.text.secondary,
                         }}
                       />
                     ))}
                   </Box>
                 </Box>
-                
-                <Box sx={{ 
-                  display: 'flex', 
-                  gap: 1, 
-                  mt: 'auto', 
-                  pt: 1,
-                  borderTop: `1px solid ${theme.palette.divider}`,
-                  '& .MuiButton-root': {
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    fontWeight: 500,
-                    fontSize: '0.75rem',
-                    px: 1.5,
-                    py: 0.75,
-                    '&:hover': {
-                      transform: 'translateY(-1px)',
-                      boxShadow: `0 4px 12px ${theme.palette.primary.main}20`,
-                    },
-                  }
-                }}>
+
+                <Box sx={{ display: 'flex', gap: 1, mt: 'auto', pt: 2 }}>
                   {hackathon.githubUrl && (
                     <Button
                       variant="outlined"
                       size="small"
-                      startIcon={<GitHubIcon fontSize="small" />}
                       href={hackathon.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      startIcon={<GitHubIcon fontSize="small" />}
                       sx={{
-                        borderColor: theme.palette.divider,
-                        color: theme.palette.text.primary,
-                        '&:hover': {
-                          borderColor: theme.palette.primary.main,
-                          backgroundColor: `${theme.palette.primary.main}08`,
-                        },
+                        textTransform: 'none',
+                        fontSize: '0.75rem',
+                        fontWeight: 500,
+                        px: 1.5,
+                        py: 0.5,
+                        minWidth: 'fit-content',
+                        flex: 1,
                       }}
                     >
-                      View Code
+                      Code
                     </Button>
                   )}
                   {hackathon.projectUrl && (
                     <Button
                       variant="contained"
                       size="small"
-                      color="primary"
-                      endIcon={<OpenInNewIcon fontSize="small" />}
                       href={hackathon.projectUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      endIcon={<OpenInNewIcon fontSize="small" />}
                       sx={{
-                        ml: 'auto',
-                        backgroundColor: theme.palette.primary.main,
-                        background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
-                        '&:hover': {
-                          backgroundColor: theme.palette.primary.dark,
-                          boxShadow: `0 4px 12px ${theme.palette.primary.main}40`,
-                        },
+                        textTransform: 'none',
+                        fontSize: '0.75rem',
+                        fontWeight: 500,
+                        px: 1.5,
+                        py: 0.5,
+                        minWidth: 'fit-content',
+                        flex: 1,
                       }}
                     >
                       Live Demo
@@ -499,7 +551,7 @@ const Hackathons: React.FC = () => {
           </motion.div>
         ))}
       </Box>
-      
+
       {filteredHackathons.length === 0 && (
         <Box sx={{ textAlign: 'center', py: 4, gridColumn: '1 / -1' }}>
           <Typography variant="h6" color="text.secondary">
