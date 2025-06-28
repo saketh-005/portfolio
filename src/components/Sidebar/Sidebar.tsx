@@ -75,11 +75,12 @@ const Sidebar: React.FC = () => {
 
   const navItems: NavItem[] = [
     { name: 'About', icon: '👨‍💻' },
-    { name: 'Education', icon: '🎓' },
     { name: 'Skills', icon: '🛠️' },
     { name: 'Work', icon: '💼' },
     { name: 'Projects', icon: '💻' },
-    { name: 'Certifications', icon: '🏆' },
+    { name: 'Hackathons', icon: '🏆' },
+    { name: 'Education', icon: '🎓' },
+    { name: 'Certifications', icon: '📜' },
     { name: 'Contact', icon: '📧' },
   ];
 

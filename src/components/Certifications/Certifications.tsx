@@ -226,7 +226,7 @@ const Certifications = () => {
               },
             }}
           >
-            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>06.</span>
+            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>07.</span>
             Certifications
           </Typography>
         </Box>

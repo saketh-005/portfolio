@@ -116,7 +116,7 @@ const Education = () => {
                   },
                 }}
               >
-                <span style={{ color: theme.palette.primary.main }}>02.</span> Education
+                <Box component="span" sx={{ color: theme.palette.primary.main, mr: 1 }}>06</Box> Education
               </Typography>
             </Box>
             <Typography

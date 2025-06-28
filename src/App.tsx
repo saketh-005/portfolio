@@ -16,7 +16,8 @@ import {
   Skills,
   Contact,
   Footer,
-  Certifications
+  Certifications,
+  Hackathons
 } from 'components';
 
 // Styles
@@ -107,6 +108,8 @@ function App() {
                     <Skills />
                     <Work />
                     <Projects />
+                    <Hackathons />
+                    <Education />
                     <Certifications />
                     <Contact />
                   </>
