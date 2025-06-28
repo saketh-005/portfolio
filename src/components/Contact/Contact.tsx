@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Box, Typography, TextField, Button, useTheme, useMediaQuery, Snackbar, Alert, IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -9,6 +9,7 @@ import EmailIcon from '@mui/icons-material/Email';
 const Contact = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const contactRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -93,6 +94,7 @@ const Contact = () => {
 
   return (
     <Box
+      ref={contactRef}
       id="contact"
       sx={{
         minHeight: '100vh',
