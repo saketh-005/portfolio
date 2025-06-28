@@ -146,20 +146,33 @@ const Skills = () => {
               whiteSpace: 'nowrap',
               marginRight: '1.5rem',
               color: theme.palette.text.primary,
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '2.5rem',
+              [theme.breakpoints.down('sm')]: {
+                fontSize: '1.5rem',
+                marginRight: '1rem',
+                flexWrap: 'wrap',
+                '&:after': {
+                  content: 'none',
+                },
+              },
               '&:after': {
                 content: '""',
                 display: 'block',
-                width: '300px',
+                width: '200px',
                 height: '1px',
+                backgroundColor: theme.palette.divider,
                 marginLeft: '20px',
-                backgroundColor: theme.palette.primary.main,
-                [theme.breakpoints.down('sm')]: {
+                [theme.breakpoints.down('md')]: {
                   width: '100px',
+                  marginLeft: '15px',
                 },
               },
             }}
           >
-            <span style={{ color: theme.palette.primary.main }}>03.</span> Skills & Experience
+            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>03.</span>
+            Skills & Expertise
           </Typography>
         </Box>
       </motion.div>

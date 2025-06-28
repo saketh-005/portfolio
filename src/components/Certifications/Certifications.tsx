@@ -99,54 +99,14 @@ const certifications: Certification[] = [
     id: 8,
     title: 'Crash Course on Python',
     issuer: 'Google',
-    date: 'May 2024',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
-    credentialId: 'AM69B27BLUU7',
-    credentialUrl: 'https://www.coursera.org/account/accomplishments/verify/AM69B27BLUU7',
+    date: 'Dec 2024',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
+    credentialId: 'QJXQ5S4V4Q6W',
+    credentialUrl: 'https://www.coursera.org/account/accomplishments/verify/QJXQ5S4V4Q6W',
     skills: ['Python', 'Programming Fundamentals']
   },
   {
     id: 9,
-    title: 'Programming in C',
-    issuer: 'IIT Bombay',
-    date: 'Apr 2024',
-    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/1920px-Indian_Institute_of_Technology_Bombay_Logo.svg.png',
-    credentialUrl: 'https://drive.google.com/file/d/1xW3j2yX-VDQ7Ge2nbZq95_it2-cDXtYP/view?usp=sharing',
-    skills: ['C Programming']
-  },
-  {
-    id: 10,
-    title: 'Programming in C++',
-    issuer: 'IIT Bombay',
-    date: 'Apr 2024',
-    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/1920px-Indian_Institute_of_Technology_Bombay_Logo.svg.png',
-    credentialUrl: 'https://drive.google.com/file/d/1c6sm7NUJGU5TOxvEpbcwTITjM-oqaj3V/view?usp=sharing',
-    skills: ['C++']
-  },
-  {
-    id: 11,
-    title: 'Python 3.4.3',
-    issuer: 'IIT Bombay',
-    date: 'Apr 2024',
-    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/1920px-Indian_Institute_of_Technology_Bombay_Logo.svg.png',
-    credentialUrl: 'https://drive.google.com/file/d/1xIm_dmjRzxGsmzbtgH3t0V78eKCSLfUe/view?usp=sharing',
-    skills: ['Python', 'Programming']
-  },
-  {
-    id: 12,
-    title: 'Introduction to IoT',
-    issuer: 'Cisco',
-    date: 'Jan 2024',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Cisco_logo_blue_2016.svg',
-    credentialId: '070d620e-03ef-4a9a-a35d-7bf75eb9c452',
-    credentialUrl: [
-      'https://www.credly.com/badges/070d620e-03ef-4a9a-a35d-7bf75eb9c452/linked_in_profile',
-      'https://drive.google.com/file/d/110MqgQlilSL0cg524wIsonJlqGJEadc_/view?usp=drive_link'
-    ],
-    skills: ['Internet of Things', 'Networking']
-  },
-  {
-    id: 13,
     title: 'What Is Generative AI?',
     issuer: 'LinkedIn',
     date: 'Jan 2024',
@@ -160,8 +120,20 @@ const certifications: Certification[] = [
 const Certifications = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [activeFilter, setActiveFilter] = useState<'all' | 'technical' | 'professional'>('all');
+  const [showMultipleUrls, setShowMultipleUrls] = useState<string[] | null>(null);
   const [visibleCerts, setVisibleCerts] = useState(isMobile ? 6 : 9);
   const showLoadMore = visibleCerts < certifications.length;
+
+  const filteredCertifications = certifications.filter(cert => {
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'technical') return cert.skills?.some(skill => 
+      ['Python', 'Machine Learning', 'AI', 'Swift', 'iOS Development', 'Cybersecurity', 'IBM Watson', 'Generative AI'].includes(skill)
+    );
+    return cert.skills?.some(skill => 
+      ['Business Intelligence', 'Information Security', 'Problem Solving'].includes(skill)
+    );
+  }).slice(0, visibleCerts);
 
   const loadMore = () => {
     setVisibleCerts(prev => Math.min(prev + (isMobile ? 2 : 3), certifications.length));
@@ -189,40 +161,77 @@ const Certifications = () => {
               whiteSpace: 'nowrap',
               marginRight: '1.5rem',
               color: theme.palette.text.primary,
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '2.5rem',
+              [theme.breakpoints.down('sm')]: {
+                fontSize: '1.5rem',
+                marginRight: '1rem',
+                flexWrap: 'wrap',
+                '&:after': {
+                  content: 'none',
+                },
+              },
               '&:after': {
                 content: '""',
                 display: 'block',
-                width: '300px',
+                width: '200px',
                 height: '1px',
                 backgroundColor: theme.palette.divider,
-                marginTop: '0.5rem',
-              },
-              [theme.breakpoints.down('sm')]: {
-                fontSize: '2rem',
-                '&:after': {
-                  width: '200px',
+                marginLeft: '20px',
+                [theme.breakpoints.down('md')]: {
+                  width: '100px',
+                  marginLeft: '15px',
                 },
               },
             }}
           >
+            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>06.</span>
             Certifications
           </Typography>
+        </Box>
+
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 4 }}>
+          <ButtonGroup variant="outlined" size={isMobile ? 'small' : 'medium'}>
+            <Button
+              variant={activeFilter === 'all' ? 'contained' : 'outlined'}
+              onClick={() => setActiveFilter('all')}
+            >
+              All
+            </Button>
+            <Button
+              variant={activeFilter === 'technical' ? 'contained' : 'outlined'}
+              onClick={() => setActiveFilter('technical')}
+            >
+              Technical
+            </Button>
+            <Button
+              variant={activeFilter === 'professional' ? 'contained' : 'outlined'}
+              onClick={() => setActiveFilter('professional')}
+            >
+              Professional
+            </Button>
+          </ButtonGroup>
         </Box>
 
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(320px, 1fr))',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+            },
             gap: '2rem',
           }}
         >
-          {certifications.slice(0, visibleCerts).map((cert, index) => (
+          {filteredCertifications.map((cert, index) => (
             <motion.div
               key={cert.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.1 }}
-              transition={{ duration: 0.4, delay: index * 0.05 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Card
                 sx={{
@@ -294,6 +303,7 @@ const Certifications = () => {
                       </Typography>
                     )}
                   </Box>
+
 
                   {cert.skills && cert.skills.length > 0 && (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', mb: 2 }}>

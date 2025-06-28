@@ -95,22 +95,32 @@ const Work = () => {
               whiteSpace: 'nowrap',
               marginRight: '1.5rem',
               color: theme.palette.text.primary,
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '2.5rem',
+              [theme.breakpoints.down('sm')]: {
+                fontSize: '1.5rem',
+                marginRight: '1rem',
+                flexWrap: 'wrap',
+                '&:after': {
+                  content: 'none',
+                },
+              },
               '&:after': {
                 content: '""',
                 display: 'block',
-                width: '300px',
+                width: '200px',
                 height: '1px',
                 backgroundColor: theme.palette.divider,
-                marginTop: '0.5rem',
-              },
-              [theme.breakpoints.down('sm')]: {
-                fontSize: '2rem',
-                '&:after': {
-                  width: '200px',
+                marginLeft: '20px',
+                [theme.breakpoints.down('md')]: {
+                  width: '100px',
+                  marginLeft: '15px',
                 },
               },
             }}
           >
+            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>04.</span>
             Work Experience
           </Typography>
         </Box>
