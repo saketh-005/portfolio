@@ -161,7 +161,6 @@ const Certifications = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [activeFilter, setActiveFilter] = useState<'all' | 'technical' | 'professional'>('all');
-  const [showMultipleUrls, setShowMultipleUrls] = useState<string[] | null>(null);
   const [visibleCerts, setVisibleCerts] = useState(isMobile ? 6 : 9);
   const showLoadMore = visibleCerts < certifications.length;
 

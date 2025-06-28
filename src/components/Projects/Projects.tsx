@@ -1,9 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, useTheme, useMediaQuery, Button, Tabs, Tab, Card, CardContent, CardMedia, Container } from '@mui/material';
+import React, { useState } from 'react';
+import { 
+  Box, 
+  Typography, 
+  useTheme, 
+  useMediaQuery, 
+  Button, 
+  Tabs, 
+  Tab, 
+  Card, 
+  CardContent, 
+  CardMedia, 
+  Grid,
+  Chip,
+  styled
+} from '@mui/material';
 import { motion } from 'framer-motion';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SectionHeader from '../common/SectionHeader';
 
 interface Project {
   id: number;
@@ -12,7 +26,7 @@ interface Project {
   tags: string[];
   image: string;
   github: string;
-  demo: string;
+  demo?: string;
   category: string;
 }
 
@@ -50,55 +64,44 @@ const projects: Project[] = [
   {
     id: 4,
     title: 'Portfolio Website',
-    description: 'A modern, responsive portfolio website built with React, TypeScript, and Material-UI. Features smooth animations, dark/light mode, and a clean, professional design.',
-    tags: ['React', 'TypeScript', 'Material-UI', 'Framer Motion', 'Responsive Design'],
-    image: '/project-portfolio.jpg',
-    github: 'https://github.com/saketh-005/portfolio',
-    demo: 'https://your-portfolio-demo.com',
-    category: 'web',
-  },
-  {
-    id: 5,
-    title: 'Fitness Tracker',
-    description: 'A mobile-first fitness tracking application with workout logging, progress tracking, and exercise library.',
-    tags: ['React Native', 'Firebase', 'Redux', 'Expo'],
-    image: '/project4.jpg',
-    github: 'https://github.com/saketh-005/fitness-tracker',
-    demo: 'https://fitness-tracker-demo.example.com',
-    category: 'mobile',
-  },
-  {
-    id: 5,
-    title: 'Recipe Finder',
-    description: 'A web application to discover and save recipes based on available ingredients and dietary preferences.',
-    tags: ['Vue.js', 'Spoonacular API', 'Vuex', 'Vuetify'],
-    image: '/project5.jpg',
-    github: 'https://github.com/saketh-005/recipe-finder',
-    demo: 'https://recipe-finder-demo.example.com',
-    category: 'web',
-  },
-  {
-    id: 6,
-    title: 'Portfolio Website',
-    description: 'A personal portfolio website built with modern web technologies to showcase projects and skills.',
+    description: 'A modern, responsive portfolio website built with React, TypeScript, and Material-UI.',
     tags: ['React', 'TypeScript', 'Material-UI', 'Framer Motion'],
-    image: '/project6.jpg',
+    image: '/project4.jpg',
     github: 'https://github.com/saketh-005/portfolio',
-    demo: 'https://my-portfolio.example.com',
+    demo: 'https://saketh-jangala.vercel.app',
+    category: 'web',
+  },
+  {
+    id: 5,
+    title: 'Weather Dashboard',
+    description: 'A weather application that displays current weather and forecast using the OpenWeatherMap API.',
+    tags: ['React', 'TypeScript', 'OpenWeatherMap API', 'Chart.js'],
+    image: '/project5.jpg',
+    github: 'https://github.com/saketh-005/weather-dashboard',
+    demo: 'https://weather-dashboard-saketh.vercel.app',
     category: 'web',
   },
 ];
 
-const Projects = () => {
+const ProjectCard = styled(Card)(({ theme }) => ({
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: 8,
+  overflow: 'hidden',
+  boxShadow: theme.shadows[3],
+  transition: 'transform 0.3s, box-shadow 0.3s',
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: theme.shadows[6],
+  },
+}));
+
+const Projects: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [category, setCategory] = useState('all');
-  const [visibleProjects, setVisibleProjects] = useState(0);
-
-  // Reset visible projects when category changes
-  useEffect(() => {
-    setVisibleProjects(isMobile ? 3 : 6);
-  }, [category, isMobile]);
+  const [category, setCategory] = useState<string>('all');
+  const [visibleProjects, setVisibleProjects] = useState<number>(isMobile ? 3 : 6);
 
   const filteredProjects = category === 'all' 
     ? projects 
@@ -106,314 +109,160 @@ const Projects = () => {
 
   const showLoadMore = visibleProjects < filteredProjects.length;
 
-  const loadMore = () => {
+  const handleLoadMore = () => {
     setVisibleProjects(prev => Math.min(prev + (isMobile ? 3 : 6), filteredProjects.length));
   };
 
-  const categories = [
-    { id: 'all', label: 'All' },
-    { id: 'web', label: 'Web' },
-    { id: 'mobile', label: 'Mobile' },
-    { id: 'ai', label: 'AI/ML' },
-  ];
+  const categories = ['all', ...Array.from(new Set(projects.map(p => p.category)))];
 
   return (
-    <Box
-      id="projects"
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: isMobile ? '5rem 1rem' : '5rem 10%',
+    <Box 
+      id="projects" 
+      sx={{ 
+        py: 8,
+        px: { xs: 3, sm: 4, md: 6 },
+        maxWidth: '1400px',
+        mx: 'auto',
         scrollMarginTop: '80px',
       }}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '4rem' }}>
-          <Typography
-            variant="h2"
-            sx={{
+      <SectionHeader 
+        title="My Projects" 
+        subtitle="A collection of my recent work and side projects" 
+        gradientColors={[theme.palette.primary.main, theme.palette.secondary.main]} 
+      />
+      
+      <Tabs 
+        value={category}
+        onChange={(_, newValue: string) => setCategory(newValue)}
+        variant="scrollable"
+        scrollButtons="auto"
+        allowScrollButtonsMobile
+        sx={{
+          mb: 4,
+          '& .MuiTabs-indicator': {
+            backgroundColor: theme.palette.primary.main,
+          },
+          '& .MuiTab-root': {
+            color: theme.palette.text.secondary,
+            '&.Mui-selected': {
+              color: theme.palette.primary.main,
               fontWeight: 600,
-              whiteSpace: 'nowrap',
-              marginRight: '1.5rem',
-              color: theme.palette.text.primary,
-              '&:after': {
-                content: '""',
-                display: 'block',
-                width: '300px',
-                height: '1px',
-                marginLeft: '20px',
-                backgroundColor: theme.palette.primary.main,
-                [theme.breakpoints.down('sm')]: {
-                  width: '100px',
-                },
-              },
-            }}
-          >
-            <span style={{ color: theme.palette.primary.main }}>04.</span> Projects
-          </Typography>
-        </Box>
-      </motion.div>
+            },
+            textTransform: 'capitalize',
+            minWidth: 'auto',
+            px: 2,
+            mx: 0.5,
+          },
+        }}
+      >
+        {categories.map((cat) => (
+          <Tab 
+            key={cat} 
+            label={cat.replace(/-/g, ' ')} 
+            value={cat}
+            disableRipple
+          />
+        ))}
+      </Tabs>
 
-      <Box sx={{ marginBottom: '3rem' }}>
-        <Tabs
-          value={category}
-          onChange={(_, newValue) => setCategory(newValue)}
-          variant="scrollable"
-          scrollButtons="auto"
-          allowScrollButtonsMobile
-          sx={{
-            '& .MuiTabs-indicator': {
-              backgroundColor: theme.palette.primary.main,
-            },
-            '& .MuiTab-root': {
-              color: theme.palette.text.secondary,
-              '&.Mui-selected': {
-                color: theme.palette.primary.main,
-              },
-              '&:hover': {
-                color: theme.palette.primary.main,
-                opacity: 1,
-              },
-            },
-          }}
-        >
-          {categories.map((cat) => (
-            <Tab 
-              key={cat.id} 
-              value={cat.id} 
-              label={cat.label} 
-              sx={{ 
-                textTransform: 'none',
-                fontSize: '1rem',
-                minWidth: 'auto',
-                padding: '0 1rem',
-                '&:first-of-type': {
-                  paddingLeft: 0,
-                },
-              }}
-            />
-          ))}
-        </Tabs>
-      </Box>
-
-      <Container maxWidth="lg" sx={{ width: '100%', px: { xs: 2, md: 4 } }}>
-        <Box 
-          sx={{ 
-            display: 'grid',
-            gridTemplateColumns: {
-              xs: '1fr',
-              md: 'repeat(2, 1fr)',
-              lg: 'repeat(3, 1fr)'
-            },
-            gap: 2,
-            width: '100%',
-            '& > *': {
-              minWidth: 0, // Prevents flex items from overflowing
-            },
-            // Ensure all cards in a row have the same height
-            '& .MuiCard-root': {
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-            },
-            '& .MuiCardContent-root': {
-              flexGrow: 1,
-              display: 'flex',
-              flexDirection: 'column',
-            },
-            '& .project-actions': {
-              mt: 'auto',
-              pt: 2,
-            }
-          }}
-        >
-          {filteredProjects.slice(0, visibleProjects).map((project, index) => (
-            <Box key={project.id}>
+      <Grid container spacing={4}>
+        {filteredProjects.slice(0, visibleProjects).map((project: Project, index: number) => (
+          <Grid item key={project.id} xs={12} sm={6} md={4}>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
             >
-              <Card 
-                className="project-card"
-                sx={{ 
-                  display: 'flex',
-                  flexDirection: 'column',
-                  backgroundColor: theme.palette.background.paper,
-                  borderRadius: '8px',
-                  border: `1px solid ${theme.palette.divider}`,
-                  transition: 'all 0.3s ease-in-out',
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  height: '100%',
-                  width: '100%',
-                  '&:hover': {
-                    transform: 'translateY(-5px)',
-                    boxShadow: `0 10px 30px ${theme.palette.primary.main}40`,
-                    borderColor: theme.palette.primary.main,
-                    '& .project-title': {
-                      color: theme.palette.primary.main,
-                    },
-                    '& .project-image': {
-                      filter: 'grayscale(0%) contrast(1) brightness(0.9)',
-                      transform: 'scale(1.05)',
-                    },
-                    '& .project-tag': {
-                      backgroundColor: `${theme.palette.primary.main}15`,
-                      color: theme.palette.primary.main,
-                    },
-                    '& .project-link': {
-                      color: theme.palette.primary.main,
-                      '& svg': {
-                        transform: 'translateX(4px)',
-                      }
-                    }
-                  },
-                }}
-              >
-                {/* Temporarily hidden - Project Image */}
-                <Box sx={{ 
-                  display: 'none', // Hide the image container
-                  position: 'relative', 
-                  paddingTop: '56.25%',
-                  backgroundColor: theme.palette.background.default,
-                  borderBottom: `1px solid ${theme.palette.divider}`
-                }}>
-                  <CardMedia
-                    component="img"
-                    image={project.image}
-                    alt={project.title}
-                    className="project-image"
-                    sx={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      opacity: 0, // Make image transparent
-                      transition: 'all 0.3s ease-in-out',
-                    }}
-                  />
-                </Box>
-                <CardContent sx={{ 
-                  flexGrow: 1, 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  p: 3
-                }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <Typography 
-                      variant="h3" 
-                      className="project-title"
-                      sx={{ 
-                        fontSize: '1.25rem', 
-                        fontWeight: 600,
-                        color: theme.palette.text.primary,
-                        transition: 'color 0.3s ease-in-out',
-                        margin: 0,
-                      }}
-                    >
-                      {project.title}
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-                      <a 
-                        href={project.github} 
-                        target="_blank" 
+              <ProjectCard>
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={project.image}
+                  alt={project.title}
+                  sx={{ objectFit: 'cover' }}
+                />
+                <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                  <Typography variant="h6" component="h3" gutterBottom>
+                    {project.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" paragraph>
+                    {project.description}
+                  </Typography>
+                  <Box sx={{ mt: 'auto', pt: 2 }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                      {project.tags.map((tag: string) => (
+                        <Chip 
+                          key={tag} 
+                          label={tag} 
+                          size="small"
+                          sx={{ 
+                            backgroundColor: theme.palette.mode === 'dark' 
+                              ? 'rgba(255, 255, 255, 0.08)' 
+                              : 'rgba(0, 0, 0, 0.08)',
+                            color: 'inherit',
+                            fontSize: '0.7rem',
+                            height: 24,
+                          }}
+                        />
+                      ))}
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 2, mt: 'auto' }}>
+                      <Button 
+                        variant="outlined" 
+                        size="small" 
+                        href={project.github}
+                        target="_blank"
                         rel="noopener noreferrer"
-                        className="project-link"
-                        style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}
+                        startIcon={<GitHubIcon />}
+                        sx={{ borderRadius: 2, textTransform: 'none' }}
                       >
-                        <GitHubIcon sx={{ transition: 'color 0.3s ease-in-out' }} />
-                      </a>
-                      <a 
-                        href={project.demo} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="project-link"
-                        style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}
-                      >
-                        <OpenInNewIcon sx={{ transition: 'transform 0.3s ease-in-out' }} />
-                      </a>
+                        Code
+                      </Button>
+                      {project.demo && (
+                        <Button 
+                          variant="contained" 
+                          size="small" 
+                          href={project.demo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          endIcon={<OpenInNewIcon />}
+                          sx={{ borderRadius: 2, textTransform: 'none' }}
+                        >
+                          Live Demo
+                        </Button>
+                      )}
                     </Box>
                   </Box>
-                  <Box sx={{ mb: 2, flexGrow: 1, minHeight: '6em' }}>
-                    <Typography 
-                      variant="body1" 
-                      sx={{ 
-                        color: theme.palette.text.secondary,
-                        lineHeight: 1.6,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 4,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        minHeight: '6em',
-                        maxHeight: '8em',
-                      }}
-                    >
-                      {project.description}
-                    </Typography>
-                  </Box>
-                  <Box className="project-tags" sx={{ mt: 'auto', pt: 2 }}>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                    {project.tags.map((tag) => (
-                      <Typography 
-                        key={tag} 
-                        variant="caption" 
-                        className="project-tag"
-                        sx={{ 
-                          padding: '0.25rem 0.75rem',
-                          backgroundColor: `${theme.palette.primary.main}08`,
-                          color: theme.palette.text.secondary,
-                          fontFamily: '"Fira Code", monospace',
-                          fontSize: '0.7rem',
-                          borderRadius: '4px',
-                          transition: 'all 0.3s ease-in-out',
-                        }}
-                      >
-                        {tag}
-                      </Typography>
-                    ))}
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          </motion.div>
-          </Box>
+                </CardContent>
+              </ProjectCard>
+            </motion.div>
+          </Grid>
         ))}
-      </Box>
-      
+      </Grid>
+
       {showLoadMore && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6, mb: 4 }}>
-          <Button
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+          <Button 
             variant="outlined"
-            color="primary"
-            onClick={loadMore}
-            endIcon={<ExpandMoreIcon />}
+            onClick={handleLoadMore}
+            endIcon={<OpenInNewIcon />}
             sx={{
               px: 4,
               py: 1.5,
-              borderRadius: '50px',
+              borderRadius: 2,
               textTransform: 'none',
               fontWeight: 500,
               '&:hover': {
-                backgroundColor: `${theme.palette.primary.main}15`,
+                transform: 'translateY(-2px)',
               },
+              transition: 'transform 0.2s',
             }}
           >
-            Show More Projects
+            Load More
           </Button>
         </Box>
       )}
-      </Container>
     </Box>
   );
 };

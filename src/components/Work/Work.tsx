@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
+import SectionHeader from '../common/SectionHeader';
 
 interface Experience {
   id: number;
@@ -77,53 +78,25 @@ const Work = () => {
     <Box
       id="work"
       sx={{
-        padding: isMobile ? '5rem 1rem' : '6rem 10%',
-        backgroundColor: theme.palette.background.default,
+        py: { xs: 6, md: 10 },
+        px: { xs: 3, md: 4, lg: 6 },
+        bgcolor: 'background.default',
+        scrollMarginTop: '80px',
+        maxWidth: '1400px',
+        mx: 'auto',
       }}
     >
+      <SectionHeader 
+        title="Work Experience"
+        subtitle="My professional journey and contributions"
+        gradientColors={[theme.palette.primary.main, theme.palette.secondary.main]}
+      />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.5 }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '4rem' }}>
-          <Typography
-            variant="h2"
-            sx={{
-              fontWeight: 600,
-              whiteSpace: 'nowrap',
-              marginRight: '1.5rem',
-              color: theme.palette.text.primary,
-              display: 'flex',
-              alignItems: 'center',
-              fontSize: '2.5rem',
-              [theme.breakpoints.down('sm')]: {
-                fontSize: '1.5rem',
-                marginRight: '1rem',
-                flexWrap: 'wrap',
-                '&:after': {
-                  content: 'none',
-                },
-              },
-              '&:after': {
-                content: '""',
-                display: 'block',
-                width: '200px',
-                height: '1px',
-                backgroundColor: theme.palette.divider,
-                marginLeft: '20px',
-                [theme.breakpoints.down('md')]: {
-                  width: '100px',
-                  marginLeft: '15px',
-                },
-              },
-            }}
-          >
-            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>03.</span>
-            Work Experience
-          </Typography>
-        </Box>
 
         <Box sx={{ position: 'relative' }}>
           {/* Timeline line */}

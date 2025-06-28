@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, useTheme, useMediaQuery, Paper, Divider, Stack } from '@mui/material';
 import { motion } from 'framer-motion';
 import SchoolIcon from '@mui/icons-material/School';
+import SectionHeader from '../common/SectionHeader';
 
 interface EducationItem {
   id: number;
@@ -62,63 +63,28 @@ const Education = () => {
     <Box
       id="education"
       sx={{
-        py: 8,
-        px: isMobile ? '1rem' : '10%',
-        backgroundColor: theme.palette.background.default,
+        py: { xs: 6, md: 10 },
+        px: { xs: 3, md: 4, lg: 6 },
+        bgcolor: 'background.default',
+        scrollMarginTop: '80px',
         width: '100%',
-        maxWidth: '1440px',
+        maxWidth: '1400px',
         mx: 'auto',
       }}
     >
-      <Box sx={{ maxWidth: '1200px', mx: 'auto' }}>
+      <Box sx={{ maxWidth: '1400px', mx: 'auto' }}>
+        <SectionHeader 
+          title="Education"
+          subtitle="My academic journey and qualifications"
+          gradientColors={[theme.palette.primary.main, theme.palette.secondary.main]}
+        />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <Box sx={{ marginBottom: '4rem' }}>
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              marginBottom: '1rem',
-              flexWrap: 'wrap'
-            }}>
-              <Typography
-                variant="h2"
-                sx={{
-                  fontWeight: 600,
-                  whiteSpace: 'nowrap',
-                  marginRight: '1.5rem',
-                  color: theme.palette.text.primary,
-                  display: 'flex',
-                  alignItems: 'center',
-                  fontSize: '2.5rem',
-                  [theme.breakpoints.down('sm')]: {
-                    fontSize: '1.5rem',
-                    marginRight: '1rem',
-                    flexWrap: 'wrap',
-                    '&:after': {
-                      content: 'none',
-                    },
-                  },
-                  '&:after': {
-                    content: '""',
-                    display: 'block',
-                    width: '200px',
-                    height: '1px',
-                    backgroundColor: theme.palette.primary.main,
-                    marginLeft: '20px',
-                    [theme.breakpoints.down('md')]: {
-                      width: '100px',
-                      marginLeft: '15px',
-                    },
-                  },
-                }}
-              >
-                <Box component="span" sx={{ color: theme.palette.primary.main, mr: 1 }}>06.</Box> Education
-              </Typography>
-            </Box>
+          <Box sx={{ mt: 6, mb: 4 }}>
             <Typography
               variant="subtitle1"
               color="text.secondary"
@@ -202,57 +168,57 @@ const Education = () => {
                   },
                 }}
               >
-                      <Box sx={{ mb: 1 }}>
-                        <Typography
-                          variant="h6"
-                          component="h3"
-                          sx={{
-                            fontWeight: 600,
-                            color: theme.palette.text.primary,
-                          }}
-                        >
-                          {edu.degree}
-                        </Typography>
-                        <Typography
-                          variant="subtitle1"
-                          sx={{
-                            color: theme.palette.primary.main,
-                            fontWeight: 500,
-                            mb: 0.5,
-                          }}
-                        >
-                          {edu.institution}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}
-                        >
-                          <span>{edu.duration}</span>
-                          {edu.grade && (
-                            <>
-                              <span>•</span>
-                              <span>{edu.grade}</span>
-                            </>
-                          )}
-                        </Typography>
-                      </Box>
-                      
-                      <Divider sx={{ my: 1.5, borderColor: theme.palette.divider }} />
-                      
-                      <Box component="ul" sx={{ pl: 2, m: 0 }}>
-                        {edu.description.map((item, i) => (
-                          <Typography 
-                            key={i} 
-                            component="li" 
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mb: 1 }}
-                          >
-                            {item}
-                          </Typography>
-                        ))}
-                      </Box>
+                <Box sx={{ mb: 1 }}>
+                  <Typography
+                    variant="h6"
+                    component="h3"
+                    sx={{
+                      fontWeight: 600,
+                      color: theme.palette.text.primary,
+                    }}
+                  >
+                    {edu.degree}
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      color: theme.palette.primary.main,
+                      fontWeight: 500,
+                      mb: 0.5,
+                    }}
+                  >
+                    {edu.institution}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}
+                  >
+                    <span>{edu.duration}</span>
+                    {edu.grade && (
+                      <>
+                        <span>•</span>
+                        <span>{edu.grade}</span>
+                      </>
+                    )}
+                  </Typography>
+                </Box>
+                
+                <Divider sx={{ my: 1.5, borderColor: theme.palette.divider }} />
+                
+                <Box component="ul" sx={{ pl: 2, m: 0 }}>
+                  {edu.description.map((item, i) => (
+                    <Typography 
+                      key={i} 
+                      component="li" 
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 1 }}
+                    >
+                      {item}
+                    </Typography>
+                  ))}
+                </Box>
               </Paper>
             </motion.div>
           ))}

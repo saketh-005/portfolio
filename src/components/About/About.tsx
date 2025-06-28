@@ -1,11 +1,11 @@
 import React from 'react';
 import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
-
+import SectionHeader from '../common/SectionHeader';
 
 const About = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  useMediaQuery(theme.breakpoints.down('md'));
 
   const skills = [
     'Python',
@@ -32,53 +32,19 @@ const About = () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: isMobile ? '5rem 2rem' : '5rem 10%',
+        py: { xs: 6, md: 10 },
+        px: { xs: 3, md: 4, lg: 6 },
         scrollMarginTop: '80px',
+        maxWidth: '1400px',
+        mx: 'auto',
+        width: '100%',
       }}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '4rem' }}>
-          <Typography
-            variant="h2"
-            sx={{
-              fontWeight: 600,
-              whiteSpace: 'nowrap',
-              marginRight: '1.5rem',
-              color: theme.palette.text.primary,
-              display: 'flex',
-              alignItems: 'center',
-              fontSize: '2.5rem',
-              [theme.breakpoints.down('sm')]: {
-                fontSize: '1.5rem',
-                marginRight: '1rem',
-                flexWrap: 'wrap',
-                '&:after': {
-                  content: 'none',
-                },
-              },
-              '&:after': {
-                content: '""',
-                display: 'block',
-                width: '200px',
-                height: '1px',
-                backgroundColor: theme.palette.primary.main,
-                marginLeft: '20px',
-                [theme.breakpoints.down('md')]: {
-                  width: '100px',
-                  marginLeft: '15px',
-                },
-              },
-            }}
-          >
-            <span style={{ color: theme.palette.primary.main }}>01.</span> About Me
-          </Typography>
-        </Box>
-      </motion.div>
+      <SectionHeader 
+        title="About Me"
+        subtitle="Full Stack Developer with a passion for building scalable web applications and solving complex problems."
+        gradientColors={[theme.palette.primary.main, theme.palette.secondary.main]}
+      />
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '7fr 5fr' }, gap: 6 }}>
         <Box>

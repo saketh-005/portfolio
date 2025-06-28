@@ -4,11 +4,13 @@ import {
   Typography, 
   Card, 
   CardContent, 
-  CardMedia, 
   Button, 
   Chip, 
   useTheme,
-  Paper
+  Paper,
+  CardMedia,
+  CardActions,
+  IconButton
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -53,6 +55,15 @@ interface WorkshopEvent extends BaseEvent {
 }
 
 type Event = HackathonEvent | WorkshopEvent;
+
+// Type guards
+const isHackathonEvent = (event: Event): event is HackathonEvent => {
+  return event.type === 'hackathon';
+};
+
+const isWorkshopEvent = (event: Event): event is WorkshopEvent => {
+  return event.type === 'workshop';
+};
 
 const events: Event[] = [
   {
@@ -145,58 +156,47 @@ const Events: React.FC = () => {
   };
 
   const filteredEvents = useMemo(() => {
-    return events.filter(event => {
-      // Filter by selected tab
-      if (selectedTab !== 'all' && event.type !== selectedTab) {
-        return false;
-      }
-      return true;
+    if (selectedTab === 'all') return events;
+    return events.filter((event): event is Event => {
+      if (!event) return false;
+      return event.type === selectedTab;
     });
   }, [selectedTab]);
 
-  const isHackathonEvent = (event: Event): event is HackathonEvent => {
-    return event.type === 'hackathon';
-  };
-
-  const isWorkshopEvent = (event: Event): event is WorkshopEvent => {
-    return event.type === 'workshop';
-  };
-
   const renderEventCard = (event: Event) => {
     if (!event) return null;
+    
     const isExpanded = expandedCard === event.id;
-    
-    // Type guards for discriminated union
-    const isHackathonEvent = (e: Event): e is HackathonEvent => e.type === 'hackathon';
-    const isWorkshopEvent = (e: Event): e is WorkshopEvent => e.type === 'workshop';
-    
+    const isHackathon = isHackathonEvent(event);
+    const isWorkshop = isWorkshopEvent(event);
+
     const renderEventDetails = () => {
-      if (isHackathonEvent(event)) {
+      if (isHackathon) {
+        const hackathonEvent = event as HackathonEvent;
         return (
           <Box>
             <Typography variant="body2" sx={{ mb: 2 }}>
-              <strong>Project:</strong> {event.projectName}
+              <strong>Project:</strong> {hackathonEvent.projectName}
             </Typography>
-            {event.role && (
+            {hackathonEvent.role && (
               <Typography variant="body2" sx={{ mb: 2 }}>
-                <strong>Role:</strong> {event.role}
+                <strong>Role:</strong> {hackathonEvent.role}
               </Typography>
             )}
-            {event.teamSize && (
-              <Typography variant="body2" sx={{ mb: 2 }}>
-                <strong>Team Size:</strong> {event.teamSize}
-              </Typography>
-            )}
+            <Typography variant="body2" sx={{ mb: 2 }}>
+              <strong>Team Size:</strong> {hackathonEvent.teamSize}
+            </Typography>
           </Box>
         );
-      } else if (isWorkshopEvent(event)) {
+      } else if (isWorkshop) {
+        const workshopEvent = event as WorkshopEvent;
         return (
           <Box>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              <strong>Duration:</strong> {event.duration}
+              <strong>Duration:</strong> {workshopEvent.duration}
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-              {event.topics.map((topic: string, idx: number) => (
+              {workshopEvent.topics.map((topic: string, idx: number) => (
                 <Chip key={idx} label={topic} size="small" variant="outlined" />
               ))}
             </Box>
@@ -209,7 +209,8 @@ const Events: React.FC = () => {
     const renderExpandedContent = () => {
       if (!isExpanded) return null;
 
-      if (isHackathonEvent(event)) {
+      if (isHackathon) {
+        const hackathonEvent = event as HackathonEvent;
         return (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -222,29 +223,29 @@ const Events: React.FC = () => {
                 Project Details
               </Typography>
               <Typography variant="body1" sx={{ mb: 3 }}>
-                {event.description}
+                {hackathonEvent.description}
               </Typography>
               
-              {event.technologies && event.technologies.length > 0 && (
+              {hackathonEvent.technologies && hackathonEvent.technologies.length > 0 && (
                 <Box sx={{ mb: 3 }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
                     Technologies Used:
                   </Typography>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                    {event.technologies.map((tech: string, idx: number) => (
+                    {hackathonEvent.technologies.map((tech: string, idx: number) => (
                       <Chip key={idx} label={tech} size="small" variant="outlined" />
                     ))}
                   </Box>
                 </Box>
               )}
               
-              {event.awards && event.awards.length > 0 && (
+              {hackathonEvent.awards && hackathonEvent.awards.length > 0 && (
                 <Box>
                   <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
                     Awards & Achievements:
                   </Typography>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {event.awards.map((award: string, idx: number) => (
+                    {hackathonEvent.awards.map((award: string, idx: number) => (
                       <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <EmojiEventsIcon color="primary" />
                         <Typography variant="body2">{award}</Typography>
@@ -256,7 +257,8 @@ const Events: React.FC = () => {
             </Paper>
           </motion.div>
         );
-      } else if (isWorkshopEvent(event)) {
+      } else if (isWorkshop) {
+        const workshopEvent = event as WorkshopEvent;
         return (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -269,16 +271,16 @@ const Events: React.FC = () => {
                 Workshop Details
               </Typography>
               <Typography variant="body1" sx={{ mb: 3 }}>
-                {event.description}
+                {workshopEvent.description}
               </Typography>
               
-              {event.learningOutcomes && event.learningOutcomes.length > 0 && (
+              {workshopEvent.learningOutcomes && workshopEvent.learningOutcomes.length > 0 && (
                 <Box>
                   <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
                     Key Learnings:
                   </Typography>
                   <ul style={{ margin: 0, paddingLeft: 20 }}>
-                    {event.learningOutcomes.map((outcome: string, idx: number) => (
+                    {workshopEvent.learningOutcomes.map((outcome: string, idx: number) => (
                       <li key={idx}>
                         <Typography variant="body2">{outcome}</Typography>
                       </li>
@@ -287,14 +289,14 @@ const Events: React.FC = () => {
                 </Box>
               )}
               
-              {event.materialsUrl && (
+              {workshopEvent.materialsUrl && (
                 <Button
                   variant="outlined"
                   size="small"
                   startIcon={<OpenInNewIcon />}
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.open(event.materialsUrl, '_blank');
+                    window.open(workshopEvent.materialsUrl, '_blank');
                   }}
                   sx={{ mt: 2 }}
                 >
@@ -314,199 +316,103 @@ const Events: React.FC = () => {
         layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
+        exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
+        style={{ marginBottom: 24 }}
       >
         <Card 
+          elevation={isExpanded ? 4 : 2}
           sx={{ 
-            mb: 3,
-            cursor: 'pointer',
+            borderRadius: 2,
+            overflow: 'hidden',
+            transition: 'all 0.3s ease',
             '&:hover': {
-              transform: 'translateY(-5px)',
+              transform: 'translateY(-4px)',
               boxShadow: theme.shadows[8],
             },
-            transition: 'all 0.3s ease',
           }}
           onClick={() => toggleCardExpand(event.id)}
         >
           <CardContent>
-            <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }}>
-              <Box flex={1}>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
-                  <Typography variant="h6" component="h3" sx={{ mb: 0, flexGrow: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+              {event.image && (
+                <Box sx={{ width: { xs: '100%', md: 200 }, height: 150, flexShrink: 0 }}>
+                  <CardMedia
+                    component="img"
+                    image={event.image}
+                    alt={event.title}
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      borderRadius: 1,
+                    }}
+                  />
+                </Box>
+              )}
+              <Box sx={{ flex: 1 }}>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="h6" component="h3" sx={{ fontWeight: 600, mb: 1 }}>
                     {event.title}
                   </Typography>
                   <Chip 
-                    label={event.type === 'hackathon' ? 'Hackathon' : 'Workshop'}
-                    size="small"
-                    color={event.type === 'hackathon' ? 'primary' : 'secondary'}
-                    sx={{ textTransform: 'capitalize' }}
+                    label={event.type === 'hackathon' ? 'Hackathon' : 'Workshop'} 
+                    color={event.type === 'hackathon' ? 'primary' : 'secondary'} 
+                    size="small" 
+                    sx={{ alignSelf: 'flex-start' }}
                   />
                 </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  {event.date} • {event.organizer}
-                  {event.location && ` • ${event.location}`}
-                </Typography>
-                <Typography variant="body1" sx={{ mt: 1, mb: 2 }}>
-                  {event.description}
+                
+                <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <SchoolIcon fontSize="small" />
+                  {event.organizer}
                 </Typography>
                 
-                {isHackathonEvent(event) && (
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                      Project: {event.projectName}
-                    </Typography>
-                    {event.role && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        Role: {event.role}
-                      </Typography>
-                    )}
-                  </Box>
-                )}
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Box component="span" sx={{ fontSize: '0.75rem' }}>📅</Box>
+                    {event.date}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Box component="span" sx={{ fontSize: '0.75rem' }}>📍</Box>
+                    {event.location}
+                  </Typography>
+                </Box>
                 
-                {isWorkshopEvent(event) && (
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                      Duration: {event.duration}
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
-                      {event.topics.map((topic, idx) => (
-                        <Chip key={idx} label={topic} size="small" />
-                      ))}
-                    </Box>
-                  </Box>
-                )}
+                {renderEventDetails()}
                 
-                <Box display="flex" gap={2} mt={2}>
-                  {'githubUrl' in event && event.githubUrl && (
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      startIcon={<GitHubIcon />}
+                <CardActions sx={{ mt: 1, p: 0, justifyContent: 'flex-end' }}>
+                  {event.githubUrl && (
+                    <IconButton 
+                      size="small" 
                       onClick={(e) => {
                         e.stopPropagation();
                         window.open(event.githubUrl, '_blank');
                       }}
+                      sx={{ color: 'text.secondary' }}
                     >
-                      Code
-                    </Button>
+                      <GitHubIcon fontSize="small" />
+                    </IconButton>
                   )}
-                  {'projectUrl' in event && event.projectUrl && (
-                    <Button
-                      variant="contained"
-                      size="small"
-                      startIcon={<OpenInNewIcon />}
+                  {event.projectUrl && (
+                    <IconButton 
+                      size="small" 
                       onClick={(e) => {
                         e.stopPropagation();
                         window.open(event.projectUrl, '_blank');
                       }}
+                      sx={{ color: 'text.secondary' }}
                     >
-                      View Project
-                    </Button>
+                      <OpenInNewIcon fontSize="small" />
+                    </IconButton>
                   )}
-                </Box>
-              </Box>
-              
-              <Box
-                sx={{
-                  width: { xs: '100%', md: 300 },
-                  height: { xs: 200, md: 'auto' },
-                  mt: { xs: 2, md: 0 },
-                  ml: { md: 3 },
-                  borderRadius: 1,
-                  overflow: 'hidden',
-                }}
-              >
-                {event.image && (
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
-                )}
+                </CardActions>
               </Box>
             </Box>
           </CardContent>
           
           <AnimatePresence>
-            {isExpanded && (
-              <motion.div
-                initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
-                exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                style={{ overflow: 'hidden' }}
-              >
-                <Paper sx={{ p: 3, m: 3, borderRadius: 2 }}>
-                  {isHackathonEvent(event) ? (
-                    <Box>
-                      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                        Project Details
-                      </Typography>
-                      <Typography variant="body1" sx={{ mb: 3 }}>
-                        {event.description}
-                      </Typography>
-                      
-                      {event.technologies && event.technologies.length > 0 && (
-                        <Box sx={{ mb: 3 }}>
-                          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                            Technologies Used:
-                          </Typography>
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                            {event.technologies.map((tech, idx) => (
-                              <Chip key={idx} label={tech} size="small" variant="outlined" />
-                            ))}
-                          </Box>
-                        </Box>
-                      )}
-                      
-                      {event.awards && event.awards.length > 0 && (
-                        <Box>
-                          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                            Awards & Achievements:
-                          </Typography>
-                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                            {event.awards.map((award, idx) => (
-                              <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <EmojiEventsIcon color="primary" />
-                                <Typography variant="body2">{award}</Typography>
-                              </Box>
-                            ))}
-                          </Box>
-                        </Box>
-                      )}
-                    </Box>
-                  ) : isWorkshopEvent(event) ? (
-                    <Box>
-                      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                        Workshop Details
-                      </Typography>
-                      <Typography variant="body1" sx={{ mb: 3 }}>
-                        {event.description}
-                      </Typography>
-                      
-                      {event.learningOutcomes && event.learningOutcomes.length > 0 && (
-                        <Box>
-                          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                            Key Learnings:
-                          </Typography>
-                          <ul style={{ margin: 0, paddingLeft: 20 }}>
-                            {event.learningOutcomes.map((outcome, idx) => (
-                              <li key={idx}>
-                                <Typography variant="body2">{outcome}</Typography>
-                              </li>
-                            ))}
-                          </ul>
-                        </Box>
-                      )}
-                    </Box>
-                  ) : null}
-                </Paper>
-              </motion.div>
-            )}
+            {renderExpandedContent()}
           </AnimatePresence>
         </Card>
       </motion.div>
@@ -548,7 +454,11 @@ const Events: React.FC = () => {
         </Box>
         
         <AnimatePresence>
-          {filteredEvents.map((event) => renderEventCard(event))}
+          {filteredEvents.map((event: Event) => (
+            <React.Fragment key={event.id}>
+              {renderEventCard(event)}
+            </React.Fragment>
+          ))}
         </AnimatePresence>
       </Box>
     </Box>
