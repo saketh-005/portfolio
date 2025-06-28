@@ -50,15 +50,27 @@ const About = () => {
               whiteSpace: 'nowrap',
               marginRight: '1.5rem',
               color: theme.palette.text.primary,
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '2.5rem',
+              [theme.breakpoints.down('sm')]: {
+                fontSize: '1.5rem',
+                marginRight: '1rem',
+                flexWrap: 'wrap',
+                '&:after': {
+                  content: 'none',
+                },
+              },
               '&:after': {
                 content: '""',
                 display: 'block',
-                width: '300px',
+                width: '200px',
                 height: '1px',
-                marginLeft: '20px',
                 backgroundColor: theme.palette.primary.main,
-                [theme.breakpoints.down('sm')]: {
+                marginLeft: '20px',
+                [theme.breakpoints.down('md')]: {
                   width: '100px',
+                  marginLeft: '15px',
                 },
               },
             }}
