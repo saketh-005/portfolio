@@ -17,7 +17,7 @@ import {
   Contact,
   Footer,
   Certifications,
-  Hackathons
+  Events
 } from 'components';
 
 // Styles
@@ -107,7 +107,7 @@ function App() {
                     <Skills />
                     <Work />
                     <Projects />
-                    <Hackathons />
+                    <Events />
                     <Education />
                     <Certifications />
                     <Contact />

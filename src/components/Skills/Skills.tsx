@@ -1,106 +1,17 @@
 import React, { useState, useRef } from 'react';
-import { Box, Typography, useTheme, useMediaQuery, Paper, Tooltip } from '@mui/material';
+import { 
+  Box, 
+  Typography, 
+  useTheme, 
+  useMediaQuery, 
+  Paper, 
+  Tooltip, 
+  PaperProps, 
+  SxProps, 
+  Theme 
+} from '@mui/material';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { styled } from '@mui/material/styles';
-
-const skills: SkillGroup[] = [
-  {
-    category: 'Languages',
-    icon: '💬',
-    items: [
-      { name: 'English', level: 100 },
-      { name: 'Telugu', level: 100 },
-      { name: 'Hindi', level: 80 },
-    ],
-  },
-  {
-    category: 'Programming Languages',
-    icon: '💻',
-    items: [
-      { name: 'Python', level: 90 },
-      { name: 'Java', level: 85 },
-      { name: 'C++', level: 80 },
-      { name: 'JavaScript', level: 85 },
-    ],
-  },
-  {
-    category: 'Web Technologies',
-    icon: '🌐',
-    items: [
-      { name: 'HTML', level: 90 },
-      { name: 'CSS', level: 85 },
-      { name: 'React', level: 80 },
-      { name: 'Node.js', level: 75 },
-    ],
-  },
-  {
-    category: 'Databases',
-    icon: '🗄️',
-    items: [
-      { name: 'MySQL', level: 85 },
-      { name: 'MongoDB', level: 80 },
-      { name: 'SQL', level: 90 },
-    ],
-  },
-  {
-    category: 'Tools & Technologies',
-    icon: '🛠️',
-    items: [
-      { name: 'Git', level: 85 },
-      { name: 'Docker', level: 75 },
-      { name: 'Kubernetes', level: 70 },
-      { name: 'AWS', level: 65 },
-      { name: 'REST APIs', level: 80 },
-      { name: 'Microservices', level: 75 },
-    ],
-  },
-];
-
-// Extend the CSSProperties interface to include CSS custom properties
-interface CustomCSSProperties extends React.CSSProperties {
-  '--progress'?: string;
-}
-
-const SkillBar = styled(motion.div)<{ level: number }>(({ theme, level }) => {
-  const progressStyle: CustomCSSProperties = {
-    '--progress': '0%',
-  };
-  
-  return {
-    width: '100%',
-    height: '6px',
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: '3px',
-    overflow: 'hidden',
-    position: 'relative',
-    ...progressStyle,
-    '&:before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      bottom: 0,
-      width: 'var(--progress, 0%)',
-      background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
-      transformOrigin: 'left',
-      transition: 'width 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
-    }
-  };
-});
-
-const SkillItem = styled(Paper)(({ theme }) => ({
-  padding: '1.5rem',
-  borderRadius: '8px',
-  height: '100%',
-  transition: 'all 0.3s ease',
-  background: theme.palette.background.paper,
-  border: `1px solid ${theme.palette.divider}`,
-  '&:hover': {
-    transform: 'translateY(-5px)',
-    boxShadow: `0 10px 30px -15px ${theme.palette.primary.main}40`,
-    borderColor: theme.palette.primary.main,
-  },
-}));
 
 interface SkillItemType {
   name: string;
@@ -113,12 +24,180 @@ interface SkillGroup {
   items: SkillItemType[];
 }
 
+const skills: SkillGroup[] = [
+  {
+    category: 'Languages',
+    icon: '💬',
+    items: [
+      { name: 'English', level: 100 },
+      { name: 'Telugu', level: 100 },
+      { name: 'Hindi', level: 80 },
+    ],
+  },
+  {
+    category: 'Programming',
+    icon: '💻',
+    items: [
+      { name: 'Python', level: 90 },
+      { name: 'Java', level: 85 },
+      { name: 'C++', level: 80 },
+      { name: 'JavaScript', level: 85 },
+    ],
+  },
+  {
+    category: 'Web',
+    icon: '🌐',
+    items: [
+      { name: 'HTML', level: 95 },
+      { name: 'CSS', level: 90 },
+      { name: 'React', level: 85 },
+      { name: 'Node.js', level: 80 },
+    ],
+  },
+  {
+    category: 'Databases',
+    icon: '🗄️',
+    items: [
+      { name: 'MySQL', level: 90 },
+      { name: 'MongoDB', level: 85 },
+      { name: 'PostgreSQL', level: 80 },
+    ],
+  },
+  {
+    category: 'DevOps',
+    icon: '🛠️',
+    items: [
+      { name: 'Git', level: 90 },
+      { name: 'Docker', level: 85 },
+      { name: 'Kubernetes', level: 75 },
+      { name: 'AWS', level: 75 },
+      { name: 'CI/CD', level: 80 },
+    ],
+  },
+];
+
+interface CustomCSSProperties extends React.CSSProperties {
+  '--progress'?: string;
+  '--gradient'?: string;
+}
+
+const StyledSkillItem = styled(Paper)<PaperProps>(({ theme }) => ({
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius * 2,
+  transition: 'all 0.3s ease',
+  height: '100%',
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: theme.shadows[8],
+    '& .skill-icon-container': {
+      transform: 'scale(1.1)',
+      background: theme.palette.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.1)' 
+        : 'rgba(0, 0, 0, 0.05)',
+    },
+  },
+}));
+
+const SkillBar = styled(motion.div)(({ theme }: { theme: Theme }) => ({
+  width: '100%',
+  height: '8px',
+  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+  borderRadius: '4px',
+  overflow: 'hidden',
+  position: 'relative',
+  '&:before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    width: 'var(--progress, 0%)',
+    background: 'var(--gradient)',
+    transformOrigin: 'left',
+    transition: 'width 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s ease',
+    borderRadius: '4px',
+    boxShadow: `0 0 10px ${theme.palette.primary.main}80`,
+  },
+  '&:hover:before': {
+    transform: 'scaleY(1.2)',
+    boxShadow: `0 0 15px ${theme.palette.primary.main}`,
+  }
+}));
+
+const SkillItem = styled(Paper)(({ theme }: { theme: Theme }) => ({
+  padding: '1.8rem',
+  borderRadius: '12px',
+  height: '100%',
+  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+  background: theme.palette.mode === 'dark' 
+    ? 'rgba(30, 30, 40, 0.7)' 
+    : 'rgba(255, 255, 255, 0.8)',
+  border: `1px solid ${theme.palette.divider}`,
+  backdropFilter: 'blur(10px)',
+  overflow: 'hidden',
+  position: 'relative',
+  '&:before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '3px',
+    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary?.main || theme.palette.primary.light})`,
+    transform: 'scaleX(0)',
+    transformOrigin: 'left',
+    transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+  },
+  '&:hover': {
+    transform: 'translateY(-8px) scale(1.02)',
+    boxShadow: `0 20px 40px -15px ${theme.palette.primary.main}30`,
+    borderColor: theme.palette.primary.main,
+    '&:before': {
+      transform: 'scaleX(1)',
+    },
+    '& .skill-icon-container': {
+      transform: 'scale(1.1) rotate(5deg)',
+      backgroundColor: `${theme.palette.primary.main}25`,
+    }
+  },
+  '&:active': {
+    transform: 'translateY(-4px) scale(1.01)',
+  }
+}));
+
 const Skills = () => {
   const [hoveredSkill, setHoveredSkill] = useState<number | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref as unknown as React.RefObject<Element>, { once: true, amount: 0.2 });
+  
+  // Gradient colors for the skill bars
+  const getGradient = (level: number) => {
+    if (level >= 90) return `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`;
+    if (level >= 70) return `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light}90)`;
+    return `linear-gradient(90deg, ${theme.palette.primary.main}90, ${theme.palette.primary.light}70)`;
+  };
+
+  // Animation variants for the skill bars
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.5,
+        ease: 'easeOut'
+      }
+    })
+  };
+
+  // Grid layout based on screen size
+  const getGridTemplateColumns = () => {
+    if (isMobile) return '1fr';
+    return 'repeat(auto-fit, minmax(300px, 1fr))';
+  };
 
   return (
     <Box
@@ -126,210 +205,206 @@ const Skills = () => {
       id="skills"
       sx={{
         minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: isMobile ? '5rem 2rem' : '5rem 10%',
-        scrollMarginTop: '80px',
+        py: 8,
+        px: { xs: 2, sm: 4, md: 6 },
+        background: theme.palette.background.default,
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.5 }}
+      {/* Background elements */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `radial-gradient(circle at 20% 30%, ${theme.palette.primary.light}10 0%, transparent 25%),
+                      radial-gradient(circle at 80% 70%, ${theme.palette.secondary?.light || theme.palette.primary.light}10 0%, transparent 25%)`,
+          zIndex: 0,
+        }}
+      />
+
+      {/* Content */}
+      <Box
+        sx={{
+          position: 'relative',
+          zIndex: 1,
+          maxWidth: 1400,
+          mx: 'auto',
+        }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '4rem' }}>
+        {/* Section Header */}
+        <Box
+          component={motion.div}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+          sx={{
+            textAlign: 'center',
+            mb: 6,
+          }}
+        >
           <Typography
             variant="h2"
+            component="h2"
             sx={{
-              fontWeight: 600,
-              whiteSpace: 'nowrap',
-              marginRight: '1.5rem',
-              color: theme.palette.text.primary,
-              display: 'flex',
-              alignItems: 'center',
-              fontSize: '2.5rem',
-              [theme.breakpoints.down('sm')]: {
-                fontSize: '1.5rem',
-                marginRight: '1rem',
-                flexWrap: 'wrap',
-                '&:after': {
-                  content: 'none',
-                },
-              },
-              '&:after': {
-                content: '""',
-                display: 'block',
-                width: '200px',
-                height: '1px',
-                backgroundColor: theme.palette.divider,
-                marginLeft: '20px',
-                [theme.breakpoints.down('md')]: {
-                  width: '100px',
-                  marginLeft: '15px',
-                },
-              },
+              fontSize: { xs: '2.5rem', md: '3.5rem' },
+              fontWeight: 700,
+              mb: 2,
+              background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary?.main || theme.palette.primary.light})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              display: 'inline-block',
             }}
           >
-            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>02.</span>
             Skills & Expertise
           </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'text.secondary',
+              maxWidth: '700px',
+              mx: 'auto',
+              lineHeight: 1.7,
+            }}
+          >
+            Here are the technologies and tools I work with on a daily basis.
+          </Typography>
         </Box>
-      </motion.div>
 
-      <Box sx={{ width: '100%' }}>
+        {/* Skills Grid */}
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
-            gap: '2rem',
-            marginTop: '3rem',
+            gridTemplateColumns: getGridTemplateColumns(),
+            gap: 3,
+            mt: 6,
           }}
         >
-          {skills.map((skillGroup, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+          {skills.map((group, groupIndex) => (
+            <Box
+              key={group.category}
+              component={motion.div}
+              custom={groupIndex}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
-              transition={{
-                duration: 0.6,
-                delay: index * 0.1,
-                ease: [0.16, 1, 0.3, 1]
-              }}
-              onHoverStart={() => setHoveredSkill(index)}
+              variants={containerVariants}
+              onHoverStart={() => setHoveredSkill(groupIndex)}
               onHoverEnd={() => setHoveredSkill(null)}
-              style={{ position: 'relative' }}
+              sx={{ height: '100%' }}
             >
-              <AnimatePresence>
-                {hoveredSkill === index && (
-                  <motion.div
-                    layoutId="hoverBackground"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      background: `linear-gradient(90deg, ${theme.palette.primary.main}33, ${theme.palette.primary.main}99)`,
-                      borderRadius: '4px',
-                      zIndex: 2,
-                    }}
-                    transition={{
-                      duration: 0.3,
-                      ease: 'easeInOut',
-                    }}
-                  />
-                )}
-              </AnimatePresence>
+              <StyledSkillItem>
+              <Box
+                className="skill-icon-container"
+                sx={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: 2,
+                  transition: 'all 0.3s ease',
+                  background: theme.palette.mode === 'dark' 
+                    ? 'rgba(255, 255, 255, 0.05)' 
+                    : 'rgba(0, 0, 0, 0.02)',
+                  fontSize: '1.8rem',
+                }}
+              >
+                {group.icon}
+              </Box>
               
-              <SkillItem elevation={0}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: '1.5rem',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: '50px',
-                      height: '50px',
-                      borderRadius: '12px',
-                      backgroundColor: theme.palette.primary.main + '20',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginRight: '1rem',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        transform: 'rotate(10deg)',
-                        backgroundColor: theme.palette.primary.main + '30',
-                      },
-                    }}
-                  >
-                    {skillGroup.icon && (
+              <Typography
+                variant="h5"
+                component="h3"
+                sx={{
+                  fontWeight: 600,
+                  mb: 3,
+                  position: 'relative',
+                  display: 'inline-block',
+                  '&:after': {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: -8,
+                    left: 0,
+                    width: '40px',
+                    height: '3px',
+                    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary?.main || theme.palette.primary.light})`,
+                    borderRadius: '3px',
+                  },
+                }}
+              >
+                {group.category}
+              </Typography>
+
+              <Box sx={{ mt: 2 }}>
+                {group.items.map((skill, skillIndex) => (
+                  <Box key={skill.name} sx={{ mb: 2.5 }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mb: 0.5,
+                      }}
+                    >
+                      <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                        {skill.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {skill.level}%
+                      </Typography>
+                    </Box>
+                    <Tooltip title={`${skill.level}%`} placement="top" arrow>
                       <Box
-                        component="span"
+                        className="skill-bar-container"
                         sx={{
-                          fontSize: '1.5rem',
-                          color: theme.palette.primary.main,
+                          position: 'relative',
+                          overflow: 'hidden',
+                          borderRadius: '4px',
+                          '&:before': {
+                            content: '""',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: theme.palette.mode === 'dark' 
+                              ? 'rgba(255, 255, 255, 0.05)' 
+                              : 'rgba(0, 0, 0, 0.05)',
+                            transform: 'scaleX(0)',
+                            transformOrigin: 'left',
+                            transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                            pointerEvents: 'none',
+                          },
                         }}
                       >
-                        {skillGroup.icon}
-                      </Box>
-                    )}
-                  </Box>
-                  <Typography
-                    variant="h3"
-                    sx={{
-                      fontSize: '1.4rem',
-                      fontWeight: 700,
-                      color: theme.palette.text.primary,
-                      margin: 0,
-                    }}
-                  >
-                    {skillGroup.category}
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: 'grid', gap: '1.2rem' }}>
-                  {skillGroup.items.map((skill, skillIndex) => (
-                    <Tooltip 
-                      key={`${skill.name}-${skillIndex}`} 
-                      title={`${skill.level}% proficiency`} 
-                      placement="top"
-                      arrow
-                    >
-                      <Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                          <Typography 
-                            variant="body2" 
-                            sx={{ 
-                              color: theme.palette.text.primary,
-                              fontWeight: 500,
-                            }}
-                          >
-                            {skill.name}
-                          </Typography>
-                          <Typography 
-                            variant="body2" 
-                            sx={{ 
-                              color: theme.palette.primary.main,
-                              fontWeight: 600,
-                              fontFeatureSettings: '"tnum"',
-                            }}
-                          >
-                            {skill.level}%
-                          </Typography>
-                        </Box>
-                        <Box sx={{ position: 'relative', overflow: 'hidden' }}>
-                          <SkillBar 
-                            level={skill.level}
-                            style={{
-                              '--progress': isInView ? `${skill.level}%` : '0%',
-                            } as React.CSSProperties}
-                            initial={false}
-                            animate={{
-                              opacity: isInView ? 1 : 0.5,
-                            }}
-                            transition={{
-                              duration: 1.5,
-                              delay: 0.1 * skillIndex,
-                              ease: [0.16, 1, 0.3, 1]
-                            }}
-                          />
-                        </Box>
+                        <SkillBar 
+                          style={{
+                            '--progress': isInView ? `${skill.level}%` : '0%',
+                            '--gradient': getGradient(skill.level),
+                          } as CustomCSSProperties}
+                          initial={false}
+                          animate={{
+                            opacity: isInView ? 1 : 0.5,
+                          }}
+                          transition={{
+                            duration: 1.5,
+                            delay: 0.1 * skillIndex,
+                            ease: [0.16, 1, 0.3, 1]
+                          }}
+                        />
                       </Box>
                     </Tooltip>
-                  ))}
-                </Box>
-              </SkillItem>
-            </motion.div>
+                  </Box>
+                ))}
+              </Box>
+              </StyledSkillItem>
+            </Box>
           ))}
         </Box>
       </Box>

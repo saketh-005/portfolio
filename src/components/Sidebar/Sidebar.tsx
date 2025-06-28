@@ -74,11 +74,11 @@ const Sidebar: React.FC = () => {
   };
 
   const navItems: NavItem[] = [
-    { name: 'About', icon: '👨‍💻' },
+    { name: 'About', icon: '👨\u200d💻' },
     { name: 'Skills', icon: '🛠️' },
     { name: 'Work', icon: '💼' },
     { name: 'Projects', icon: '💻' },
-    { name: 'Hackathons', icon: '🏆' },
+    { name: 'Events', icon: '🏆' },
     { name: 'Education', icon: '🎓' },
     { name: 'Certifications', icon: '📜' },
     { name: 'Contact', icon: '📧' },
