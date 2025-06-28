@@ -55,38 +55,49 @@ const Hackathons: React.FC = () => {
       ));
 
   return (
-    <Box id="hackathons" sx={{ py: 8, px: isMobile ? 2 : 8 }}>
+    <Box 
+      id="hackathons" 
+      sx={{ 
+        py: { xs: 4, md: 8 },
+        px: { xs: 2, sm: 4, md: 6, lg: 8, xl: 12 },
+        maxWidth: '1400px',
+        mx: 'auto'
+      }}
+    >
       {/* Section Header */}
       <Box 
         sx={{ 
           display: 'flex', 
           alignItems: 'center', 
           mb: 6,
-          flexDirection: isMobile ? 'column' : 'row',
-          textAlign: isMobile ? 'center' : 'left'
+          width: '100%'
         }}
       >
         <Typography 
           variant="h2" 
           sx={{ 
-            fontSize: isMobile ? '1.8rem' : '2.5rem',
+            fontSize: { xs: '1.8rem', md: '2.5rem' },
             fontWeight: 700,
             color: theme.palette.text.primary,
-            mr: 2,
-            mb: isMobile ? 1 : 0,
-            display: 'flex',
-            alignItems: 'center'
+            whiteSpace: 'nowrap',
+            mr: 2
           }}
         >
           <Box component="span" sx={{ color: theme.palette.primary.main, mr: 1 }}>05</Box>
           Hackathons
         </Typography>
-        
-        <Box sx={{ flexGrow: 1, height: '4px', background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, rgba(0,0,0,0) 100%)` }} />
+        <Box 
+          sx={{ 
+            width: '100%', 
+            height: '1px', 
+            backgroundColor: theme.palette.divider,
+            ml: 2
+          }} 
+        />
       </Box>
 
       {/* Filter Buttons */}
-      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'flex-end' }}>
         <ButtonGroup variant="outlined" size={isMobile ? 'small' : 'medium'}>
           <Button 
             onClick={() => setFilter('all')} 
@@ -113,8 +124,13 @@ const Hackathons: React.FC = () => {
       <Box 
         sx={{
           display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(400px, 1fr))',
-          gap: 4,
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(2, 1fr)',
+            lg: 'repeat(3, 1fr)'
+          },
+          gap: '2rem',
           mt: 4
         }}
       >
