@@ -107,6 +107,46 @@ const certifications: Certification[] = [
   },
   {
     id: 9,
+    title: 'Programming in C',
+    issuer: 'IIT Bombay',
+    date: 'Apr 2024',
+    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/1920px-Indian_Institute_of_Technology_Bombay_Logo.svg.png',
+    credentialUrl: 'https://drive.google.com/file/d/1xW3j2yX-VDQ7Ge2nbZq95_it2-cDXtYP/view?usp=sharing',
+    skills: ['C Programming']
+  },
+  {
+    id: 10,
+    title: 'Programming in C++',
+    issuer: 'IIT Bombay',
+    date: 'Apr 2024',
+    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/1920px-Indian_Institute_of_Technology_Bombay_Logo.svg.png',
+    credentialUrl: 'https://drive.google.com/file/d/1c6sm7NUJGU5TOxvEpbcwTITjM-oqaj3V/view?usp=sharing',
+    skills: ['C++']
+  },
+  {
+    id: 11,
+    title: 'Python 3.4.3',
+    issuer: 'IIT Bombay',
+    date: 'Apr 2024',
+    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/1920px-Indian_Institute_of_Technology_Bombay_Logo.svg.png',
+    credentialUrl: 'https://drive.google.com/file/d/1xIm_dmjRzxGsmzbtgH3t0V78eKCSLfUe/view?usp=sharing',
+    skills: ['Python', 'Programming']
+  },
+  {
+    id: 12,
+    title: 'Introduction to IoT',
+    issuer: 'Cisco',
+    date: 'Jan 2024',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Cisco_logo_blue_2016.svg',
+    credentialId: '070d620e-03ef-4a9a-a35d-7bf75eb9c452',
+    credentialUrl: [
+      'https://www.credly.com/badges/070d620e-03ef-4a9a-a35d-7bf75eb9c452/linked_in_profile',
+      'https://drive.google.com/file/d/110MqgQlilSL0cg524wIsonJlqGJEadc_/view?usp=drive_link'
+    ],
+    skills: ['Internet of Things', 'Networking']
+  },
+  {
+    id: 13,
     title: 'What Is Generative AI?',
     issuer: 'LinkedIn',
     date: 'Jan 2024',
