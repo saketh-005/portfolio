@@ -84,15 +84,18 @@ function App() {
       <CssBaseline />
       <Router>
         <AnimatePresence mode="wait">
-          <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, minHeight: '100vh' }}>
             <Sidebar />
             <Box 
               component="main" 
               sx={{ 
                 flexGrow: 1, 
                 marginLeft: { xs: 0, md: '300px' },
+                marginTop: { xs: '80px', md: 0 },
                 width: { xs: '100%', md: 'calc(100% - 300px)' },
-                padding: { xs: '1rem', md: '2rem' },
+                padding: { xs: '1rem', sm: '1.5rem', md: '2rem' },
+                maxWidth: '100%',
+                overflowX: 'hidden',
               }}
             >
               <Routes>
