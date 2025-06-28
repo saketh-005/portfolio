@@ -171,7 +171,7 @@ const Skills = () => {
               },
             }}
           >
-            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>03.</span>
+            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>02.</span>
             Skills & Expertise
           </Typography>
         </Box>

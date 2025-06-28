@@ -104,7 +104,6 @@ function App() {
                   <>
                     <Home />
                     <About />
-                    <Education />
                     <Skills />
                     <Work />
                     <Projects />

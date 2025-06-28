@@ -156,7 +156,7 @@ const Projects = () => {
               },
             }}
           >
-            <span style={{ color: theme.palette.primary.main }}>05.</span> Projects
+            <span style={{ color: theme.palette.primary.main }}>04.</span> Projects
           </Typography>
         </Box>
       </motion.div>

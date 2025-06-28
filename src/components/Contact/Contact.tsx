@@ -100,7 +100,7 @@ const Contact = () => {
               },
             }}
           >
-            <span style={{ color: theme.palette.primary.main }}>07.</span> Get In Touch
+            <span style={{ color: theme.palette.primary.main }}>08.</span> Get In Touch
           </Typography>
         </Box>
       </motion.div>

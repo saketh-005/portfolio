@@ -120,7 +120,7 @@ const Work = () => {
               },
             }}
           >
-            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>04.</span>
+            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>03.</span>
             Work Experience
           </Typography>
         </Box>

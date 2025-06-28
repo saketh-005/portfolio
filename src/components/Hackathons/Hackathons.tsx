@@ -64,37 +64,52 @@ const Hackathons: React.FC = () => {
         mx: 'auto'
       }}
     >
-      {/* Section Header */}
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          mb: 6,
-          width: '100%'
-        }}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
       >
-        <Typography 
-          variant="h2" 
-          sx={{ 
-            fontSize: { xs: '1.8rem', md: '2.5rem' },
-            fontWeight: 700,
-            color: theme.palette.text.primary,
-            whiteSpace: 'nowrap',
-            mr: 2
-          }}
-        >
-          <Box component="span" sx={{ color: theme.palette.primary.main, mr: 1 }}>05</Box>
-          Hackathons
-        </Typography>
         <Box 
           sx={{ 
-            width: '100%', 
-            height: '1px', 
-            backgroundColor: theme.palette.divider,
-            ml: 2
-          }} 
-        />
-      </Box>
+            display: 'flex', 
+            alignItems: 'center', 
+            mb: 6,
+            width: '100%'
+          }}
+        >
+          <Typography 
+            variant="h2" 
+            sx={{ 
+              fontSize: { xs: '1.8rem', md: '2.5rem' },
+              fontWeight: 700,
+              color: theme.palette.text.primary,
+              whiteSpace: 'nowrap',
+              mr: 2
+            }}
+          >
+            <span style={{ color: theme.palette.primary.main }}>05.</span> Hackathons
+          </Typography>
+          <Box 
+            sx={{ 
+              flexGrow: 1, 
+              height: '1px', 
+              backgroundColor: theme.palette.divider,
+              ml: 2,
+              '&:after': {
+                content: '""',
+                display: 'block',
+                width: '300px',
+                height: '1px',
+                backgroundColor: theme.palette.primary.main,
+                [theme.breakpoints.down('sm')]: {
+                  width: '100px',
+                },
+              },
+            }} 
+          />
+        </Box>
+      </motion.div>
 
       {/* Filter Buttons */}
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'flex-end' }}>
