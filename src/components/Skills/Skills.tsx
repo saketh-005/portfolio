@@ -118,10 +118,11 @@ const Skills = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const isInView = useInView(ref as unknown as React.RefObject<Element>, { once: true, amount: 0.2 });
 
   return (
     <Box
+      ref={ref}
       id="skills"
       sx={{
         minHeight: '100vh',
@@ -177,7 +178,7 @@ const Skills = () => {
         </Box>
       </motion.div>
 
-      <Box sx={{ width: '100%' }} ref={ref}>
+      <Box sx={{ width: '100%' }}>
         <Box
           sx={{
             display: 'grid',
@@ -208,21 +209,19 @@ const Skills = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="hover-background"
                     style={{
                       position: 'absolute',
                       top: 0,
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      background: `linear-gradient(135deg, ${theme.palette.primary.main}15, ${theme.palette.primary.light}10)`,
-                      borderRadius: '12px',
-                      zIndex: -1,
+                      background: `linear-gradient(90deg, ${theme.palette.primary.main}33, ${theme.palette.primary.main}99)`,
+                      borderRadius: '4px',
+                      zIndex: 2,
                     }}
                     transition={{
-                      type: 'spring',
-                      stiffness: 500,
-                      damping: 30,
+                      duration: 0.3,
+                      ease: 'easeInOut',
                     }}
                   />
                 )}
