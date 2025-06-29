@@ -159,7 +159,17 @@ const Projects: React.FC = () => {
   };
 
   return (
-    <Box id="projects" sx={{ py: 8 }}>
+    <Box 
+      id="projects" 
+      sx={{ 
+        width: '100%',
+        maxWidth: '1400px',
+        mx: 'auto',
+        px: { xs: 3, sm: 4, md: 6 },
+        py: 8,
+        scrollMarginTop: '30px',
+      }}
+    >
       <SectionHeader 
         title="My Projects" 
         subtitle="Some of my recent work" 
