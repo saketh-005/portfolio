@@ -5,15 +5,17 @@ import {
   useTheme, 
   useMediaQuery, 
   Button, 
-  Tabs, 
-  Tab, 
   Card, 
   CardContent, 
   CardMedia, 
   Grid,
   Chip,
-  styled
+  styled,
+  Paper
 } from '@mui/material';
+import TabSystem, { TabItem } from '../common/TabSystem';
+import CodeIcon from '@mui/icons-material/Code';
+import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import { motion } from 'framer-motion';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -29,6 +31,8 @@ interface Project {
   demo?: string;
   category: string;
 }
+
+type ProjectCategory = 'all' | 'web' | 'ai' | 'mobile';
 
 const projects: Project[] = [
   {
@@ -59,6 +63,36 @@ const projects: Project[] = [
     image: '/project3.jpg',
     github: 'https://github.com/saketh-005/ai-image-generator',
     demo: 'https://ai-image-generator.example.com',
+    category: 'ai',
+  },
+  {
+    id: 6,
+    title: 'Mobile Fitness App',
+    description: 'A cross-platform mobile application for tracking workouts and nutrition with personalized plans.',
+    tags: ['React Native', 'Firebase', 'Redux', 'Expo'],
+    image: '/project6.jpg',
+    github: 'https://github.com/saketh-005/fitness-app',
+    demo: 'https://expo.dev/@saketh/fitness-app',
+    category: 'mobile',
+  },
+  {
+    id: 7,
+    title: 'E-commerce Mobile App',
+    description: 'A mobile shopping application with product catalog, cart, and secure checkout.',
+    tags: ['React Native', 'Node.js', 'MongoDB', 'Stripe'],
+    image: '/project7.jpg',
+    github: 'https://github.com/saketh-005/ecommerce-mobile',
+    demo: 'https://expo.dev/@saketh/ecommerce-app',
+    category: 'mobile',
+  },
+  {
+    id: 8,
+    title: 'Sentiment Analysis Tool',
+    description: 'An AI tool that analyzes text sentiment using natural language processing.',
+    tags: ['Python', 'NLTK', 'Flask', 'React'],
+    image: '/project8.jpg',
+    github: 'https://github.com/saketh-005/sentiment-analysis',
+    demo: 'https://sentiment-analyzer-demo.vercel.app',
     category: 'ai',
   },
   {
@@ -98,148 +132,131 @@ const ProjectCard = styled(Card)(({ theme }) => ({
 }));
 
 const Projects: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<ProjectCategory>('all');
+  const [visibleProjects, setVisibleProjects] = useState<number>(6);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [category, setCategory] = useState<string>('all');
-  const [visibleProjects, setVisibleProjects] = useState<number>(isMobile ? 3 : 6);
 
-  const filteredProjects = category === 'all' 
+  const tabs: TabItem[] = [
+    { value: 'all', label: 'All', icon: <AllInclusiveIcon fontSize="small" /> },
+    { value: 'web', label: 'Web', icon: <CodeIcon fontSize="small" /> },
+    { value: 'ai', label: 'AI/ML', icon: <CodeIcon fontSize="small" /> },
+    { value: 'mobile', label: 'Mobile', icon: <CodeIcon fontSize="small" /> },
+  ];
+
+  const filteredProjects = activeTab === 'all' 
     ? projects 
-    : projects.filter(project => project.category === category);
+    : projects.filter(project => project.category === activeTab);
 
-  const showLoadMore = visibleProjects < filteredProjects.length;
+  const showLoadMore = filteredProjects.length > visibleProjects;
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setActiveTab(newValue as ProjectCategory);
+  };
 
   const handleLoadMore = () => {
     setVisibleProjects(prev => Math.min(prev + (isMobile ? 3 : 6), filteredProjects.length));
   };
 
-  const categories = ['all', ...Array.from(new Set(projects.map(p => p.category)))];
-
   return (
-    <Box 
-      id="projects" 
-      sx={{ 
-        pt: 0,
-        pb: 0,
-        px: { xs: 3, sm: 4, md: 6 },
-        maxWidth: '1400px',
-        mx: 'auto',
-        scrollMarginTop: '30px',
-      }}
-    >
+    <Box id="projects" sx={{ py: 8 }}>
       <SectionHeader 
         title="My Projects" 
-        subtitle="A collection of my recent work and side projects" 
+        subtitle="Some of my recent work" 
         gradientColors={[theme.palette.primary.main, theme.palette.secondary.main]} 
       />
       
-      <Tabs 
-        value={category}
-        onChange={(_, newValue: string) => setCategory(newValue)}
-        variant="scrollable"
-        scrollButtons="auto"
-        allowScrollButtonsMobile
-        sx={{
-          mb: 4,
-          '& .MuiTabs-indicator': {
-            backgroundColor: theme.palette.primary.main,
-          },
-          '& .MuiTab-root': {
-            color: theme.palette.text.secondary,
-            '&.Mui-selected': {
-              color: theme.palette.primary.main,
-              fontWeight: 600,
-            },
-            textTransform: 'capitalize',
-            minWidth: 'auto',
-            px: 2,
-            mx: 0.5,
-          },
-        }}
-      >
-        {categories.map((cat) => (
-          <Tab 
-            key={cat} 
-            label={cat.replace(/-/g, ' ')} 
-            value={cat}
-            disableRipple
-          />
-        ))}
-      </Tabs>
-
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'center',
+        mb: 6,
+        mt: 4,
+      }}>
+        <TabSystem
+          value={activeTab}
+          onChange={handleTabChange}
+          tabs={tabs}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+        />
+      </Box>
+      
       <Grid container spacing={4}>
-        {filteredProjects.slice(0, visibleProjects).map((project: Project, index: number) => (
-          <Grid item key={project.id} xs={12} sm={6} md={4}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-            >
-              <ProjectCard>
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={project.image}
-                  alt={project.title}
-                  sx={{ objectFit: 'cover' }}
-                />
-                <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                  <Typography variant="h6" component="h3" gutterBottom>
-                    {project.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" paragraph>
-                    {project.description}
-                  </Typography>
-                  <Box sx={{ mt: 'auto', pt: 2 }}>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                      {project.tags.map((tag: string) => (
-                        <Chip 
-                          key={tag} 
-                          label={tag} 
-                          size="small"
-                          sx={{ 
-                            backgroundColor: theme.palette.mode === 'dark' 
-                              ? 'rgba(255, 255, 255, 0.08)' 
-                              : 'rgba(0, 0, 0, 0.08)',
-                            color: 'inherit',
-                            fontSize: '0.7rem',
-                            height: 24,
-                          }}
-                        />
-                      ))}
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 2, mt: 'auto' }}>
-                      <Button 
-                        variant="outlined" 
-                        size="small" 
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        startIcon={<GitHubIcon />}
-                        sx={{ borderRadius: 2, textTransform: 'none' }}
-                      >
-                        Code
-                      </Button>
-                      {project.demo && (
+        {filteredProjects.length > 0 ? (
+          filteredProjects.slice(0, visibleProjects).map((project: Project, index: number) => (
+            <Grid item key={project.id} xs={12} sm={6} md={4}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <ProjectCard>
+                  {/* Image hidden but data preserved */}
+                  <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                    <Typography variant="h6" component="h3" gutterBottom>
+                      {project.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" paragraph>
+                      {project.description}
+                    </Typography>
+                    <Box sx={{ mt: 'auto', pt: 2 }}>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                        {project.tags.map((tag: string) => (
+                          <Chip 
+                            key={tag} 
+                            label={tag} 
+                            size="small"
+                            sx={{ 
+                              backgroundColor: theme.palette.mode === 'dark' 
+                                ? 'rgba(255, 255, 255, 0.08)' 
+                                : 'rgba(0, 0, 0, 0.08)',
+                              color: 'inherit',
+                              fontSize: '0.7rem',
+                              height: 24,
+                            }}
+                          />
+                        ))}
+                      </Box>
+                      <Box sx={{ display: 'flex', gap: 2, mt: 'auto' }}>
                         <Button 
-                          variant="contained" 
+                          variant="outlined" 
                           size="small" 
-                          href={project.demo}
+                          href={project.github}
                           target="_blank"
                           rel="noopener noreferrer"
-                          endIcon={<OpenInNewIcon />}
+                          startIcon={<GitHubIcon />}
                           sx={{ borderRadius: 2, textTransform: 'none' }}
                         >
-                          Live Demo
+                          Code
                         </Button>
-                      )}
+                        {project.demo && (
+                          <Button 
+                            variant="contained" 
+                            size="small" 
+                            href={project.demo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            endIcon={<OpenInNewIcon />}
+                            sx={{ borderRadius: 2, textTransform: 'none' }}
+                          >
+                            Live Demo
+                          </Button>
+                        )}
+                      </Box>
                     </Box>
-                  </Box>
-                </CardContent>
-              </ProjectCard>
-            </motion.div>
-          </Grid>
-        ))}
+                  </CardContent>
+                </ProjectCard>
+              </motion.div>
+            </Grid>
+          ))
+        ) : (
+          <Box sx={{ width: '100%', textAlign: 'center', py: 8 }}>
+            <Typography variant="h6" color="text.secondary">
+              No projects found in this category
+            </Typography>
+          </Box>
+        )}
       </Grid>
 
       {showLoadMore && (
