@@ -19,6 +19,7 @@ import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import { motion } from 'framer-motion';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SectionHeader from '../common/SectionHeader';
 
 interface Project {
@@ -271,20 +272,24 @@ const Projects: React.FC = () => {
 
       {showLoadMore && (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
-          <Button 
+          <Button
             variant="outlined"
             onClick={handleLoadMore}
-            endIcon={<OpenInNewIcon />}
+            endIcon={<ExpandMoreIcon />}
             sx={{
               px: 4,
-              py: 1.5,
-              borderRadius: 2,
+              py: 1.25,
+              borderRadius: '50px',
               textTransform: 'none',
-              fontWeight: 500,
+              borderColor: theme.palette.divider,
+              color: theme.palette.text.secondary,
               '&:hover': {
+                borderColor: theme.palette.primary.main,
+                color: theme.palette.primary.main,
+                backgroundColor: `${theme.palette.primary.main}08`,
                 transform: 'translateY(-2px)',
               },
-              transition: 'transform 0.2s',
+              transition: 'all 0.2s',
             }}
           >
             Load More

@@ -37,6 +37,11 @@ interface BaseEvent {
   githubUrl?: string;
 }
 
+interface EventImage {
+  url: string;
+  description: string;
+}
+
 interface HackathonEvent extends BaseEvent {
   type: 'hackathon';
   projectName: string;
@@ -44,6 +49,9 @@ interface HackathonEvent extends BaseEvent {
   teamSize: number;
   awards?: string[];
   role?: string;
+  images?: EventImage[];
+  projectUrls?: string[];
+  credentialUrl?: string;
 }
 
 interface WorkshopEvent extends BaseEvent {
@@ -52,6 +60,7 @@ interface WorkshopEvent extends BaseEvent {
   topics: string[];
   learningOutcomes: string[];
   materialsUrl?: string;
+  credentialUrl?: string;
 }
 
 type Event = HackathonEvent | WorkshopEvent;
@@ -68,70 +77,58 @@ const isWorkshopEvent = (event: Event): event is WorkshopEvent => {
 const events: Event[] = [
   {
     id: 1,
-    title: 'Hack the North 2023',
+    title: 'Machine Learning Hackathon',
     type: 'hackathon' as const,
-    organizer: 'University of Waterloo',
-    location: 'Waterloo, ON',
-    date: 'September 2023',
-    description: 'Developed an AI-powered tool that provides automated code reviews and suggestions for improvement.',
-    projectName: 'AI-Powered Code Review Assistant',
-    technologies: ['React', 'Node.js', 'Python', 'TensorFlow', 'MongoDB'],
-    teamSize: 4,
-    awards: ['Best Use of Google Cloud', 'Top 10 Finalist'],
-    image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-    projectUrl: 'https://example.com/ai-code-review',
-    githubUrl: 'https://github.com/username/ai-code-review',
-    role: 'Full Stack Developer'
+    organizer: 'Techgyan Technologies',
+    location: 'Indian Institute of Technology, Hyderabad',
+    date: 'June 21, 2025',
+    description: '24-hour machine learning hackathon focused on developing practical AI solutions for healthcare and agriculture. Our team developed two innovative projects that leverage machine learning to solve real-world problems.',
+    projectName: '1. DiabEase - Diabetes Prediction System | 2. AgriGuard - Plant Disease Detection',
+    technologies: ['Python', 'TensorFlow', 'Keras', 'scikit-learn', 'OpenCV', 'Flask', 'React'],
+    teamSize: 3,
+    awards: ['1st Place Winner'],
+    role: 'Machine Learning Engineer & Full Stack Developer',
+    images: [
+      { 
+        url: 'https://drive.google.com/thumbnail?id=1tD5CNCc1q09HUQz9i9JlaBWmyfK_jks4&sz=w1000', 
+        description: 'Appreciation Certificate' 
+      },
+      { 
+        url: 'https://drive.google.com/thumbnail?id=1Ue9mBHhO_oiEUZFEh_D7TWmDVzQbmFUu&sz=w1000', 
+        description: 'Team Photo with Organizers' 
+      }
+    ],
+    projectUrls: [
+      'https://github.com/username/diabetes-prediction',
+      'https://github.com/username/plant-disease-detection'
+    ],
+    credentialUrl: 'https://drive.google.com/file/d/1yLWNh_p_lXdhDQW4MdZX0XJmlDRKC4qC/view?usp=sharing'
   },
   {
     id: 2,
-    title: 'MLH Local Hack Day: Build',
+    title: 'Artificial Intelligence Workshop',
     type: 'workshop' as const,
-    organizer: 'Major League Hacking',
-    location: 'Online',
-    date: 'December 2022',
-    description: 'Conducted a workshop on building full-stack applications with React and Firebase.',
-    duration: '4 hours',
-    topics: ['React', 'Firebase', 'Authentication', 'Real-time Database', 'Deployment'],
-    learningOutcomes: [
-      'Understand the basics of React and Firebase',
-      'Learn how to build a full-stack application',
-      'Implement user authentication',
-      'Work with real-time databases'
-    ],
-    materialsUrl: 'https://example.com/workshop-materials'
-  },
-  {
-    id: 3,
-    title: 'Hack the Valley 6',
-    type: 'hackathon' as const,
-    organizer: 'University of Toronto Scarborough',
-    location: 'Toronto, ON',
-    date: 'January 2023',
-    description: 'Created a mobile app that helps users track and reduce their carbon footprint.',
-    projectName: 'EcoTrack - Carbon Footprint Tracker',
-    technologies: ['React Native', 'Firebase', 'Node.js', 'MongoDB'],
-    teamSize: 3,
-    awards: ['Best Sustainability Hack'],
-    githubUrl: 'https://github.com/username/ecotrack',
-    role: 'Frontend Developer'
-  },
-  {
-    id: 4,
-    title: 'Intro to Web Development',
-    type: 'workshop' as const,
-    organizer: 'Local Community College',
-    location: 'San Francisco, CA',
-    date: 'March 2023',
-    description: 'Led a beginner-friendly workshop introducing HTML, CSS, and JavaScript fundamentals.',
+    organizer: 'Techgyan Technologies',
+    location: 'Indian Institute of Technology, Hyderabad',
+    date: 'June 2024',
+    description: 'Comprehensive workshop covering AI, Machine Learning, Deep Learning, and hands-on activities with Google\'s Teachable Machine.',
     duration: '6 hours',
-    topics: ['HTML', 'CSS', 'JavaScript', 'Responsive Design'],
-    learningOutcomes: [
-      'Understand the basics of HTML, CSS, and JavaScript',
-      'Learn how to build a responsive website',
-      'Deploy a simple web application'
+    topics: [
+      'History of AI and key milestones',
+      'AI, ML, Deep Learning, and Generative AI',
+      'Machine Learning types: Supervised, Unsupervised, Reinforcement',
+      'Google Teachable Machine',
+      'AI Hackathon with real-world applications'
     ],
-    materialsUrl: 'https://example.com/web-dev-workshop'
+    learningOutcomes: [
+      'Understand fundamental AI concepts and evolution',
+      'Differentiate between AI, ML, DL, and Generative AI',
+      'Create models for image, pose, and sound detection',
+      'Develop AI solutions for real-world problems',
+      'Participate in AI Hackathon'
+    ],
+    image: 'https://drive.google.com/thumbnail?id=1BKQhSDXTvxyN1dXwsPtODaJKIOf93f9s&sz=w1000',
+    credentialUrl: 'https://drive.google.com/file/d/1nA3ZkpM3FoOz0JyjSOSEQ6QvnNGG6VW1/view?usp=sharing'
   }
 ];
 
@@ -239,19 +236,139 @@ const Events: React.FC = () => {
                 </Box>
               )}
               
-              {hackathonEvent.awards && hackathonEvent.awards.length > 0 && (
-                <Box>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, mb: 3 }}>
+                {hackathonEvent.awards && hackathonEvent.awards.length > 0 && (
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                      Awards & Achievements:
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      {hackathonEvent.awards.map((award: string, idx: number) => (
+                        <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <EmojiEventsIcon color="primary" />
+                          <Typography variant="body2">{award}</Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+                )}
+                
+                {hackathonEvent.images && hackathonEvent.images.length > 0 && (
+                  <Box sx={{ 
+                    flex: 1, 
+                    minHeight: 300,
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                    position: 'relative',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    bgcolor: 'background.paper'
+                  }}>
+                    <Box sx={{ 
+                      display: 'flex',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      overflowX: 'auto',
+                      scrollSnapType: 'x mandatory',
+                      '&::-webkit-scrollbar': { display: 'none' },
+                      msOverflowStyle: 'none',
+                      scrollbarWidth: 'none'
+                    }}>
+                      {hackathonEvent.images.map((img: EventImage, idx: number) => (
+                        <Box 
+                          key={idx} 
+                          sx={{
+                            flex: '0 0 100%',
+                            scrollSnapAlign: 'start',
+                            position: 'relative',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            p: 2,
+                            height: '100%',
+                            boxSizing: 'border-box'
+                          }}
+                        >
+                          <Box 
+                            component="img"
+                            src={img.url}
+                            alt={img.description}
+                            sx={{
+                              maxWidth: '100%',
+                              maxHeight: '80%',
+                              objectFit: 'contain',
+                              borderRadius: 1,
+                              mb: 1
+                            }}
+                          />
+                          <Typography 
+                            variant="caption" 
+                            color="text.secondary"
+                            sx={{ 
+                              textAlign: 'center',
+                              fontSize: '0.75rem',
+                              mt: 1
+                            }}
+                          >
+                            {img.description}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+                )}
+              </Box>
+              
+              {hackathonEvent.projectUrls && hackathonEvent.projectUrls.length > 0 && (
+                <Box sx={{ mb: 2 }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                    Awards & Achievements:
+                    Project Links:
                   </Typography>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {hackathonEvent.awards.map((award: string, idx: number) => (
-                      <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <EmojiEventsIcon color="primary" />
-                        <Typography variant="body2">{award}</Typography>
-                      </Box>
+                    {hackathonEvent.projectUrls.map((url: string, idx: number) => (
+                      <Button
+                        key={idx}
+                        variant="outlined"
+                        size="small"
+                        startIcon={<GitHubIcon />}
+                        endIcon={<OpenInNewIcon />}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(url, '_blank');
+                        }}
+                        sx={{
+                          justifyContent: 'flex-start',
+                          textTransform: 'none',
+                          textAlign: 'left',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {url.split('/').pop() || `Project ${idx + 1}`}
+                      </Button>
                     ))}
                   </Box>
+                </Box>
+              )}
+              
+              {hackathonEvent.credentialUrl && (
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    startIcon={<EmojiEventsIcon />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(hackathonEvent.credentialUrl, '_blank');
+                    }}
+                  >
+                    View Winner Certificate
+                  </Button>
                 </Box>
               )}
             </Paper>
@@ -289,20 +406,34 @@ const Events: React.FC = () => {
                 </Box>
               )}
               
-              {workshopEvent.materialsUrl && (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<OpenInNewIcon />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.open(workshopEvent.materialsUrl, '_blank');
-                  }}
-                  sx={{ mt: 2 }}
-                >
-                  View Workshop Materials
-                </Button>
-              )}
+              <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
+                {workshopEvent.materialsUrl && (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<OpenInNewIcon />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(workshopEvent.materialsUrl, '_blank');
+                    }}
+                  >
+                    Workshop Materials
+                  </Button>
+                )}
+                {workshopEvent.credentialUrl && (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    startIcon={<EmojiEventsIcon />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(workshopEvent.credentialUrl, '_blank');
+                    }}
+                  >
+                    View Credential
+                  </Button>
+                )}
+              </Box>
             </Paper>
           </motion.div>
         );
