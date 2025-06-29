@@ -33,7 +33,7 @@ const About = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         pt: 0,
-        pb: { xs: 8, md: 10 },
+        pb: 0,
         px: { xs: 3, md: 4, lg: 6 },
         scrollMarginTop: '30px',
         maxWidth: '1400px',

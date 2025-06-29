@@ -30,10 +30,50 @@ html {
   scroll-padding-top: 30px; /* Further reduced top spacing */
 }
 
-/* Section styles */
+/* Reset all sections */
 section {
-  scroll-margin-top: 30px; /* Match scroll-padding-top */
-  margin-bottom: 6rem; /* Increased bottom spacing */
+  scroll-margin-top: 30px; /* Reduced to minimize gap */
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 !important;
+  padding: 0 !important;
+  padding-bottom: 8rem !important; /* Add gap below each section */
+}
+
+/* First section */
+#home {
+  padding-top: 6rem !important;
+  padding-bottom: 8rem !important;
+}
+
+/* Regular sections */
+#about,
+#skills,
+#work,
+#projects,
+#events,
+#education,
+#certifications {
+  padding-top: 2rem !important; /* Minimal top padding */
+  padding-bottom: 8rem !important;
+}
+
+/* Contact section */
+#contact {
+  padding-top: 2rem !important;
+  padding-bottom: 6rem !important; /* Less bottom padding for last section */
+}
+
+/* Add extra space before certain sections for better visual separation */
+#skills,
+#work,
+#projects,
+#events,
+#education,
+#certifications,
+#contact {
+  margin-top: 4rem !important;
 }
 
 .App-link {
