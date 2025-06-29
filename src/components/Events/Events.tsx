@@ -292,6 +292,24 @@ const Events: React.FC = () => {
                       </Box>
                     </Box>
                   )}
+                  
+                  {hackathonEvent.credentialUrl && (
+                    <Box sx={{ mt: 1 }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        startIcon={<EmojiEventsIcon />}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(hackathonEvent.credentialUrl, '_blank');
+                        }}
+                        fullWidth
+                      >
+                        View Winner Certificate
+                      </Button>
+                    </Box>
+                  )}
                 </Box>
                 
                 {hackathonEvent.images && hackathonEvent.images.length > 0 && (
@@ -308,35 +326,7 @@ const Events: React.FC = () => {
                     <Carousel images={hackathonEvent.images} />
                   </Box>
                 )}
-                
-                {hackathonEvent.credentialUrl && (
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                      Certificate:
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      startIcon={<EmojiEventsIcon />}
-                      endIcon={<OpenInNewIcon />}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(hackathonEvent.credentialUrl, '_blank');
-                      }}
-                      fullWidth
-                      sx={{
-                        justifyContent: 'flex-start',
-                        textTransform: 'none',
-                        textAlign: 'left',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                      }}
-                    >
-                      View Winner Certificate
-                    </Button>
-                  </Box>
-                )}
+
               </Box>
             </Paper>
           </motion.div>
