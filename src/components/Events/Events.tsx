@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -10,7 +10,10 @@ import {
   Paper,
   CardMedia,
   CardActions,
-  IconButton
+  IconButton,
+  Tabs,
+  Tab,
+  useMediaQuery
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -19,6 +22,8 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import SchoolIcon from '@mui/icons-material/School';
 import CodeIcon from '@mui/icons-material/Code';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import SectionHeader from '../common/SectionHeader';
 import TabSystem, { TabItem } from '../common/TabSystem';
 
@@ -237,21 +242,57 @@ const Events: React.FC = () => {
               )}
               
               <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, mb: 3 }}>
-                {hackathonEvent.awards && hackathonEvent.awards.length > 0 && (
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                      Awards & Achievements:
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      {hackathonEvent.awards.map((award: string, idx: number) => (
-                        <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <EmojiEventsIcon color="primary" />
-                          <Typography variant="body2">{award}</Typography>
-                        </Box>
-                      ))}
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {hackathonEvent.awards && hackathonEvent.awards.length > 0 && (
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                        Awards & Achievements:
+                      </Typography>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                        {hackathonEvent.awards.map((award: string, idx: number) => (
+                          <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <EmojiEventsIcon color="primary" />
+                            <Typography variant="body2">{award}</Typography>
+                          </Box>
+                        ))}
+                      </Box>
                     </Box>
-                  </Box>
-                )}
+                  )}
+                  
+                  {hackathonEvent.projectUrls && hackathonEvent.projectUrls.length > 0 && (
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                        Project Links:
+                      </Typography>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                        {hackathonEvent.projectUrls.map((url: string, idx: number) => (
+                          <Button
+                            key={idx}
+                            variant="outlined"
+                            size="small"
+                            startIcon={<GitHubIcon />}
+                            endIcon={<OpenInNewIcon />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(url, '_blank');
+                            }}
+                            fullWidth
+                            sx={{
+                              justifyContent: 'flex-start',
+                              textTransform: 'none',
+                              textAlign: 'left',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis'
+                            }}
+                          >
+                            {url.split('/').pop() || `Project ${idx + 1}`}
+                          </Button>
+                        ))}
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
                 
                 {hackathonEvent.images && hackathonEvent.images.length > 0 && (
                   <Box sx={{ 
@@ -264,97 +305,10 @@ const Events: React.FC = () => {
                     borderColor: 'divider',
                     bgcolor: 'background.paper'
                   }}>
-                    <Box sx={{ 
-                      display: 'flex',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      overflowX: 'auto',
-                      scrollSnapType: 'x mandatory',
-                      '&::-webkit-scrollbar': { display: 'none' },
-                      msOverflowStyle: 'none',
-                      scrollbarWidth: 'none'
-                    }}>
-                      {hackathonEvent.images.map((img: EventImage, idx: number) => (
-                        <Box 
-                          key={idx} 
-                          sx={{
-                            flex: '0 0 100%',
-                            scrollSnapAlign: 'start',
-                            position: 'relative',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            p: 2,
-                            height: '100%',
-                            boxSizing: 'border-box'
-                          }}
-                        >
-                          <Box 
-                            component="img"
-                            src={img.url}
-                            alt={img.description}
-                            sx={{
-                              maxWidth: '100%',
-                              maxHeight: '80%',
-                              objectFit: 'contain',
-                              borderRadius: 1,
-                              mb: 1
-                            }}
-                          />
-                          <Typography 
-                            variant="caption" 
-                            color="text.secondary"
-                            sx={{ 
-                              textAlign: 'center',
-                              fontSize: '0.75rem',
-                              mt: 1
-                            }}
-                          >
-                            {img.description}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
+                    <Carousel images={hackathonEvent.images} />
                   </Box>
                 )}
               </Box>
-              
-              {hackathonEvent.projectUrls && hackathonEvent.projectUrls.length > 0 && (
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                    Project Links:
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {hackathonEvent.projectUrls.map((url: string, idx: number) => (
-                      <Button
-                        key={idx}
-                        variant="outlined"
-                        size="small"
-                        startIcon={<GitHubIcon />}
-                        endIcon={<OpenInNewIcon />}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.open(url, '_blank');
-                        }}
-                        sx={{
-                          justifyContent: 'flex-start',
-                          textTransform: 'none',
-                          textAlign: 'left',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}
-                      >
-                        {url.split('/').pop() || `Project ${idx + 1}`}
-                      </Button>
-                    ))}
-                  </Box>
-                </Box>
-              )}
               
               {hackathonEvent.credentialUrl && (
                 <Box sx={{ mt: 2 }}>
@@ -593,6 +547,202 @@ const Events: React.FC = () => {
           ))}
         </AnimatePresence>
       </Box>
+    </Box>
+  );
+};
+
+// Carousel Component
+const Carousel = ({ images }: { images: EventImage[] }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMediaQuery('(max-width:900px)');
+  const [startX, setStartX] = useState<number | null>(null);
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (startX === null) return;
+    
+    const currentX = e.touches[0].clientX;
+    const diff = startX - currentX;
+    
+    if (Math.abs(diff) > 50) { // Minimum swipe distance
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+      setStartX(null);
+    }
+  };
+
+  // Auto-advance slides every 5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [currentIndex]);
+
+  return (
+    <Box 
+      ref={containerRef}
+      sx={{
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+    >
+      {/* Navigation Arrows */}
+      {!isMobile && (
+        <>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              prevSlide();
+            }}
+            size="large"
+            sx={{
+              position: 'absolute',
+              left: 8,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 2,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              },
+            }}
+          >
+            <NavigateBeforeIcon />
+          </IconButton>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              nextSlide();
+            }}
+            size="large"
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 2,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              },
+            }}
+          >
+            <NavigateNextIcon />
+          </IconButton>
+        </>
+      )}
+
+      {/* Slides */}
+      <Box
+        sx={{
+          display: 'flex',
+          transition: 'transform 0.5s ease',
+          height: '100%',
+          transform: `translateX(-${currentIndex * 100}%)`,
+        }}
+      >
+        {images.map((img, index) => (
+          <Box
+            key={index}
+            sx={{
+              minWidth: '100%',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              p: 2,
+              boxSizing: 'border-box',
+            }}
+          >
+            <Box
+              component="img"
+              src={img.url}
+              alt={img.description}
+              sx={{
+                maxWidth: '100%',
+                maxHeight: '80%',
+                objectFit: 'contain',
+                borderRadius: 1,
+                mb: 1,
+                userSelect: 'none',
+              }}
+              draggable="false"
+            />
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{
+                textAlign: 'center',
+                fontSize: '0.75rem',
+                mt: 1,
+              }}
+            >
+              {img.description}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+
+      {/* Dots Indicator */}
+      {images.length > 1 && (
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 8,
+            left: 0,
+            right: 0,
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 1,
+          }}
+        >
+          {images.map((_, index) => (
+            <Box
+              key={index}
+              onClick={() => goToSlide(index)}
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                backgroundColor: currentIndex === index ? 'primary.main' : 'action.disabled',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s',
+                '&:hover': {
+                  backgroundColor: 'primary.main',
+                  opacity: 0.7,
+                },
+              }}
+            />
+          ))}
+        </Box>
+      )}
     </Box>
   );
 };
