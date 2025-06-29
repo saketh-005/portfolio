@@ -411,19 +411,46 @@ const Events: React.FC = () => {
         transition={{ duration: 0.3 }}
         style={{ marginBottom: 24 }}
       >
-        <Card 
-          elevation={isExpanded ? 4 : 2}
-          sx={{ 
-            borderRadius: 2,
-            overflow: 'hidden',
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              transform: 'translateY(-4px)',
-              boxShadow: theme.shadows[8],
-            },
-          }}
-          onClick={() => toggleCardExpand(event.id)}
+        <Box
+          component={motion.div}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
         >
+          <Card 
+            sx={{
+              mb: 3,
+              borderRadius: 2,
+              overflow: 'hidden',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+              '&:hover': {
+                boxShadow: '0 8px 30px rgba(0,0,0,0.1)'
+              },
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+            }}
+            onClick={() => toggleCardExpand(event.id)}
+          >
+          {!isExpanded && (
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: 8,
+                left: 0,
+                right: 0,
+                textAlign: 'center',
+                color: 'text.secondary',
+                fontSize: '0.75rem',
+                '&:hover': {
+                  color: 'primary.main',
+                },
+                transition: 'color 0.2s ease',
+              }}
+            >
+              <span>Click card for details</span>
+            </Box>
+          )}
           <CardContent>
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
               {event.image && (
@@ -505,7 +532,8 @@ const Events: React.FC = () => {
           <AnimatePresence>
             {renderExpandedContent()}
           </AnimatePresence>
-        </Card>
+          </Card>
+        </Box>
       </motion.div>
     );
   };
