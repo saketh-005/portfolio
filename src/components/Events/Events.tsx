@@ -308,23 +308,36 @@ const Events: React.FC = () => {
                     <Carousel images={hackathonEvent.images} />
                   </Box>
                 )}
+                
+                {hackathonEvent.credentialUrl && (
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                      Certificate:
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<EmojiEventsIcon />}
+                      endIcon={<OpenInNewIcon />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(hackathonEvent.credentialUrl, '_blank');
+                      }}
+                      fullWidth
+                      sx={{
+                        justifyContent: 'flex-start',
+                        textTransform: 'none',
+                        textAlign: 'left',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                      }}
+                    >
+                      View Winner Certificate
+                    </Button>
+                  </Box>
+                )}
               </Box>
-              
-              {hackathonEvent.credentialUrl && (
-                <Box sx={{ mt: 2 }}>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    startIcon={<EmojiEventsIcon />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open(hackathonEvent.credentialUrl, '_blank');
-                    }}
-                  >
-                    View Winner Certificate
-                  </Button>
-                </Box>
-              )}
             </Paper>
           </motion.div>
         );
