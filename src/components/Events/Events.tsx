@@ -424,10 +424,11 @@ const Events: React.FC = () => {
       id="events"
       component="section"
       sx={{ 
-        py: { xs: 6, md: 10 },
+        pt: 0,  // Removed top padding
+        pb: { xs: 8, md: 10 },  // Further increased bottom padding
         position: 'relative',
         bgcolor: 'background.default',
-        scrollMarginTop: '80px',
+        scrollMarginTop: '30px',
       }}
     >
       <Box sx={{ 

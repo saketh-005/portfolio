@@ -63,10 +63,11 @@ const Education = () => {
     <Box
       id="education"
       sx={{
-        py: { xs: 6, md: 10 },
+        pt: 0,  // Removed top padding
+        pb: { xs: 8, md: 10 },  // Further increased bottom padding
         px: { xs: 3, md: 4, lg: 6 },
         bgcolor: 'background.default',
-        scrollMarginTop: '80px',
+        scrollMarginTop: '30px',
         width: '100%',
         maxWidth: '1400px',
         mx: 'auto',

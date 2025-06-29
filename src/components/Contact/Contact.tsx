@@ -137,8 +137,9 @@ const Contact = () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: isMobile ? '5rem 2rem' : '5rem 10%',
-        scrollMarginTop: '80px',
+        padding: isMobile ? '2rem 2rem 10rem' : '2rem 10% 10rem',
+        scrollMarginTop: '30px',
+        pt: 0,
       }}
     >
       <motion.div

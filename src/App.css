@@ -24,6 +24,18 @@
   color: white;
 }
 
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 30px; /* Further reduced top spacing */
+}
+
+/* Section styles */
+section {
+  scroll-margin-top: 30px; /* Match scroll-padding-top */
+  margin-bottom: 6rem; /* Increased bottom spacing */
+}
+
 .App-link {
   color: #61dafb;
 }

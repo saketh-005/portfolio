@@ -36,35 +36,36 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
     <Box 
       sx={{ 
         textAlign: align,
-        mb: 8,
+        mb: 4,
         maxWidth,
         mx: 'auto',
         position: 'relative',
         zIndex: 1,
         '&:not(:first-of-type)': {
-          mt: { xs: 6, md: 10 },
+          mt: { xs: 4, md: 6 },
         }
       }}
     >
       <Typography 
-        variant="h2" 
+        variant="h3" 
         component="h2" 
         sx={{ 
-          fontSize: { xs: '2.5rem', md: '3.5rem', lg: '4rem' },
-          fontWeight: 800,
-          mb: 3,
-          lineHeight: 1.1,
+          fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
+          fontWeight: 700,
+          mb: 1,
+          lineHeight: 1.2,
           background: `linear-gradient(90deg, ${startColor}, ${endColor})`,
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          textAlign: 'center',
+          backgroundClip: 'text',
+          display: 'inline-block',
           '&:after': {
             content: '""',
             display: 'block',
             width: '80px',
             height: '5px',
             background: `linear-gradient(90deg, ${startColor}, ${endColor})`,
-            margin: '1.5rem auto 0',
+            margin: '1rem auto 0',
             borderRadius: '3px',
             position: 'relative',
             zIndex: 1,
@@ -76,10 +77,16 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
       
       {subtitle && (
         <Typography 
-          variant="h6"
+          variant="subtitle1"
+          component="p"
           sx={{ 
             color: 'text.secondary',
-            lineHeight: 1.7,
+            fontWeight: 400,
+            lineHeight: 1.5,
+            maxWidth: '600px',
+            mx: 'auto',
+            fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+            mt: 0.5,
             px: { xs: 2, sm: 0 }
           }}
         >

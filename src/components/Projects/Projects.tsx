@@ -119,11 +119,12 @@ const Projects: React.FC = () => {
     <Box 
       id="projects" 
       sx={{ 
-        py: 8,
+        pt: 0,  // Removed top padding
+        pb: { xs: 8, md: 10 },  // Further increased bottom padding
         px: { xs: 3, sm: 4, md: 6 },
         maxWidth: '1400px',
         mx: 'auto',
-        scrollMarginTop: '80px',
+        scrollMarginTop: '30px',
       }}
     >
       <SectionHeader 
