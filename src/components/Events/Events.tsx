@@ -294,7 +294,10 @@ const Events: React.FC = () => {
                   )}
                   
                   {hackathonEvent.credentialUrl && (
-                    <Box sx={{ mt: 1 }}>
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                        Certificate:
+                      </Typography>
                       <Button
                         variant="contained"
                         color="primary"
