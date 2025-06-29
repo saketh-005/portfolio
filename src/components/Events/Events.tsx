@@ -66,6 +66,7 @@ interface WorkshopEvent extends BaseEvent {
   learningOutcomes: string[];
   materialsUrl?: string;
   credentialUrl?: string;
+  images?: EventImage[];
 }
 
 type Event = HackathonEvent | WorkshopEvent;
@@ -132,7 +133,17 @@ const events: Event[] = [
       'Develop AI solutions for real-world problems',
       'Participate in AI Hackathon'
     ],
-    image: 'https://drive.google.com/thumbnail?id=1BKQhSDXTvxyN1dXwsPtODaJKIOf93f9s&sz=w1000',
+    images: [
+      { 
+        url: 'https://drive.google.com/thumbnail?id=1BKQhSDXTvxyN1dXwsPtODaJKIOf93f9s&sz=w1000',
+        description: 'Workshop Certificate of Completion'
+      },
+      {
+        url: 'https://drive.google.com/thumbnail?id=1Ue9mBHhO_oiEUZFEh_D7TWmDVzQbmFUu&sz=w1000',
+        description: 'Hackathon Certificate of Completion'
+      },
+    ],
+    materialsUrl: 'https://drive.google.com/drive/folders/1BKQhSDXTvxyN1dXwsPtODaJKIOf93f9s?usp=sharing',
     credentialUrl: 'https://drive.google.com/file/d/1nA3ZkpM3FoOz0JyjSOSEQ6QvnNGG6VW1/view?usp=sharing'
   }
 ];
@@ -351,47 +362,62 @@ const Events: React.FC = () => {
                 {workshopEvent.description}
               </Typography>
               
-              {workshopEvent.learningOutcomes && workshopEvent.learningOutcomes.length > 0 && (
-                <Box>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, mb: 3 }}>
+                <Box sx={{ flex: 1 }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                    Key Learnings:
+                    Learning Outcomes:
                   </Typography>
-                  <ul style={{ margin: 0, paddingLeft: 20 }}>
-                    {workshopEvent.learningOutcomes.map((outcome: string, idx: number) => (
-                      <li key={idx}>
-                        <Typography variant="body2">{outcome}</Typography>
-                      </li>
+                  <ul style={{ marginTop: 0, paddingLeft: 20 }}>
+                    {workshopEvent.learningOutcomes.map((outcome, idx) => (
+                      <li key={idx}><Typography variant="body2">{outcome}</Typography></li>
                     ))}
                   </ul>
+                  
+                  {(workshopEvent.materialsUrl || workshopEvent.credentialUrl) && (
+                    <Box sx={{ mt: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                      {workshopEvent.materialsUrl && (
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          startIcon={<OpenInNewIcon />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(workshopEvent.materialsUrl, '_blank');
+                          }}
+                        >
+                          Workshop Materials
+                        </Button>
+                      )}
+                      {workshopEvent.credentialUrl && (
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          startIcon={<OpenInNewIcon />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(workshopEvent.credentialUrl, '_blank');
+                          }}
+                        >
+                          View Certificate
+                        </Button>
+                      )}
+                    </Box>
+                  )}
                 </Box>
-              )}
-              
-              <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
-                {workshopEvent.materialsUrl && (
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    startIcon={<OpenInNewIcon />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open(workshopEvent.materialsUrl, '_blank');
-                    }}
-                  >
-                    Workshop Materials
-                  </Button>
-                )}
-                {workshopEvent.credentialUrl && (
-                  <Button
-                    variant="contained"
-                    size="small"
-                    startIcon={<EmojiEventsIcon />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open(workshopEvent.credentialUrl, '_blank');
-                    }}
-                  >
-                    View Credential
-                  </Button>
+                
+                {workshopEvent.images && workshopEvent.images.length > 0 && (
+                  <Box sx={{ 
+                    flex: 1, 
+                    minHeight: 300,
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                    position: 'relative',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    bgcolor: 'background.paper'
+                  }}>
+                    <Carousel images={workshopEvent.images} />
+                  </Box>
                 )}
               </Box>
             </Paper>
@@ -453,7 +479,7 @@ const Events: React.FC = () => {
           )}
           <CardContent>
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
-              {event.image && (
+              {isHackathonEvent(event) && event.image && (
                 <Box sx={{ width: { xs: '100%', md: 200 }, height: 150, flexShrink: 0 }}>
                   <CardMedia
                     component="img"
