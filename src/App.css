@@ -32,19 +32,19 @@ html {
 
 /* Reset all sections */
 section {
-  scroll-margin-top: 30px; /* Reduced to minimize gap */
+  scroll-margin-top: 15px; /* Further reduced to minimize gap */
   position: relative;
   width: 100%;
   box-sizing: border-box;
   margin: 0 !important;
   padding: 0 !important;
-  padding-bottom: 8rem !important; /* Add gap below each section */
+  padding-bottom: 7rem !important; /* Increased gap below each section */
 }
 
 /* First section */
 #home {
-  padding-top: 6rem !important;
-  padding-bottom: 8rem !important;
+  padding-top: 3rem !important; /* Further reduced from 4rem */
+  padding-bottom: 7rem !important; /* Increased from 6rem */
 }
 
 /* Regular sections */
@@ -55,17 +55,17 @@ section {
 #events,
 #education,
 #certifications {
-  padding-top: 2rem !important; /* Minimal top padding */
-  padding-bottom: 8rem !important;
+  padding-top: 0.5rem !important; /* Reduced from 1rem */
+  padding-bottom: 7rem !important; /* Increased from 6rem */
 }
 
 /* Contact section */
 #contact {
-  padding-top: 2rem !important;
-  padding-bottom: 6rem !important; /* Less bottom padding for last section */
+  padding-top: 0.5rem !important; /* Reduced from 1rem */
+  padding-bottom: 5rem !important; /* Increased from 4rem */
 }
 
-/* Add extra space before certain sections for better visual separation */
+/* Further reduced space before certain sections */
 #skills,
 #work,
 #projects,
@@ -73,7 +73,7 @@ section {
 #education,
 #certifications,
 #contact {
-  margin-top: 4rem !important;
+  margin-top: 1.5rem !important; /* Reduced from 2rem */
 }
 
 .App-link {
