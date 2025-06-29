@@ -10,8 +10,13 @@ import {
   Chip,
   ButtonGroup
 } from '@mui/material';
+import TabSystem, { TabItem } from '../common/TabSystem';
+import CodeIcon from '@mui/icons-material/Code';
+import SchoolIcon from '@mui/icons-material/School';
+import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import { motion } from 'framer-motion';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SectionHeader from '../common/SectionHeader';
 
 interface Certification {
   id: number;
@@ -161,6 +166,16 @@ const Certifications = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [activeFilter, setActiveFilter] = useState<'all' | 'technical' | 'professional'>('all');
+  
+  const filterTabs: TabItem[] = [
+    { value: 'all', label: 'All', icon: <AllInclusiveIcon /> },
+    { value: 'technical', label: 'Technical', icon: <CodeIcon /> },
+    { value: 'professional', label: 'Professional', icon: <SchoolIcon /> },
+  ];
+  
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setActiveFilter(newValue as 'all' | 'technical' | 'professional');
+  };
   const [visibleCerts, setVisibleCerts] = useState(isMobile ? 6 : 9);
   const showLoadMore = visibleCerts < certifications.length;
 
@@ -179,91 +194,50 @@ const Certifications = () => {
   };
 
   return (
-    <Box
+    <Box 
       id="certifications"
-      sx={{
-        padding: isMobile ? '5rem 1rem' : '6rem 10%',
-        backgroundColor: theme.palette.background.default,
+      component="section"
+      sx={{ 
+        py: { xs: 6, md: 10 },
+        position: 'relative',
+        bgcolor: 'background.default',
+        scrollMarginTop: '80px',
       }}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.5 }}
+      <Box sx={{ 
+        maxWidth: '1400px', 
+        mx: 'auto',
+        px: { xs: 3, md: 4, lg: 6 },
+        position: 'relative',
+        zIndex: 1,
+      }}>
+      <SectionHeader 
+        title="Certifications"
+        subtitle="My professional certifications and achievements"
+        gradientColors={[theme.palette.primary.main, theme.palette.secondary.main]}
+      />
+
+      <Box sx={{ mt: 6, mb: 8 }}>
+        <TabSystem
+          value={activeFilter}
+          onChange={handleTabChange}
+          tabs={filterTabs}
+          variant="scrollable"
+          scrollButtons="auto"
+        />
+      </Box>
+
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
+          },
+          gap: '2rem',
+        }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '4rem' }}>
-          <Typography
-            variant="h2"
-            sx={{
-              fontWeight: 600,
-              whiteSpace: 'nowrap',
-              marginRight: '1.5rem',
-              color: theme.palette.text.primary,
-              display: 'flex',
-              alignItems: 'center',
-              fontSize: '2.5rem',
-              [theme.breakpoints.down('sm')]: {
-                fontSize: '1.5rem',
-                marginRight: '1rem',
-                flexWrap: 'wrap',
-                '&:after': {
-                  content: 'none',
-                },
-              },
-              '&:after': {
-                content: '""',
-                display: 'block',
-                width: '200px',
-                height: '1px',
-                backgroundColor: theme.palette.divider,
-                marginLeft: '20px',
-                [theme.breakpoints.down('md')]: {
-                  width: '100px',
-                  marginLeft: '15px',
-                },
-              },
-            }}
-          >
-            <span style={{ color: theme.palette.primary.main, marginRight: '10px' }}>07.</span>
-            Certifications
-          </Typography>
-        </Box>
-
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 4 }}>
-          <ButtonGroup variant="outlined" size={isMobile ? 'small' : 'medium'}>
-            <Button
-              variant={activeFilter === 'all' ? 'contained' : 'outlined'}
-              onClick={() => setActiveFilter('all')}
-            >
-              All
-            </Button>
-            <Button
-              variant={activeFilter === 'technical' ? 'contained' : 'outlined'}
-              onClick={() => setActiveFilter('technical')}
-            >
-              Technical
-            </Button>
-            <Button
-              variant={activeFilter === 'professional' ? 'contained' : 'outlined'}
-              onClick={() => setActiveFilter('professional')}
-            >
-              Professional
-            </Button>
-          </ButtonGroup>
-        </Box>
-
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: {
-              xs: '1fr',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
-            },
-            gap: '2rem',
-          }}
-        >
           {filteredCertifications.map((cert, index) => (
             <motion.div
               key={cert.id}
@@ -438,7 +412,7 @@ const Certifications = () => {
             </Button>
           </Box>
         )}
-      </motion.div>
+      </Box>
     </Box>
   );
 };

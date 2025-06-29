@@ -15,6 +15,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import EmailIcon from '@mui/icons-material/Email';
+import SectionHeader from '../common/SectionHeader';
 
 const Contact = () => {
   const theme = useTheme();
@@ -146,30 +147,11 @@ const Contact = () => {
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.5 }}
       >
-        <Box sx={{ marginBottom: '4rem' }}>
-          <Typography
-            variant="h2"
-            sx={{
-              fontWeight: 600,
-              whiteSpace: 'nowrap',
-              marginRight: '1.5rem',
-              color: theme.palette.text.primary,
-              '&:after': {
-                content: '""',
-                display: 'block',
-                width: '300px',
-                height: '1px',
-                marginLeft: '20px',
-                backgroundColor: theme.palette.primary.main,
-                [theme.breakpoints.down('sm')]: {
-                  width: '100px',
-                },
-              },
-            }}
-          >
-            <span style={{ color: theme.palette.primary.main }}>08.</span> Get In Touch
-          </Typography>
-        </Box>
+        <SectionHeader 
+          title="Get In Touch"
+          subtitle="Feel free to reach out to me"
+          gradientColors={[theme.palette.primary.main, theme.palette.secondary.main]}
+        />
       </motion.div>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 6 }}>
