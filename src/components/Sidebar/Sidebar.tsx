@@ -23,6 +23,8 @@ import CodeIcon from '@mui/icons-material/Code';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 // Styled Components
 const NavLink = styled('a')(({ theme }: { theme: Theme }) => ({
@@ -71,9 +73,11 @@ interface SocialLink {
 interface SidebarProps {
   minimized: boolean;
   setMinimized: (minimized: boolean) => void;
+  mode: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ minimized, setMinimized }) => {
+const Sidebar: React.FC<SidebarProps> = ({ minimized, setMinimized, mode, toggleTheme }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -112,15 +116,20 @@ const Sidebar: React.FC<SidebarProps> = ({ minimized, setMinimized }) => {
 
   const drawerContent = (minimized: boolean = false) => (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Desktop Minimize Button */}
+      {/* Theme Switcher & Minimize Button */}
       <Box
         sx={{
           display: { xs: 'none', md: 'flex' },
-          justifyContent: minimized ? 'center' : 'flex-end',
+          flexDirection: minimized ? 'column' : 'row',
+          justifyContent: 'center',
           alignItems: 'center',
+          gap: minimized ? 1 : 0,
           mb: 2,
         }}
       >
+        <IconButton onClick={toggleTheme} size="small" sx={{ ml: minimized ? 0 : 1 }}>
+          {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+        </IconButton>
         <IconButton onClick={handleDesktopMinimize} size="small">
           {minimized ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </IconButton>
