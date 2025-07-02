@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton, useScrollTrigger, Slide, Box, useTheme, useMediaQuery } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link as ScrollLink } from 'react-scroll';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import XIcon from '@mui/icons-material/X';
+import EmailIcon from '@mui/icons-material/Email';
 
 interface Props {
   children: React.ReactElement;
@@ -18,7 +24,12 @@ function HideOnScroll(props: Props) {
   );
 }
 
-const Header = () => {
+interface HeaderProps {
+  mode: 'light' | 'dark';
+  toggleTheme: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ mode, toggleTheme }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const theme = useTheme();
@@ -48,10 +59,17 @@ const Header = () => {
     { name: 'Contact', to: 'contact' },
   ];
 
+  const socialLinks = [
+    { icon: <GitHubIcon />, url: 'https://github.com/saketh-005' },
+    { icon: <LinkedInIcon />, url: 'https://www.linkedin.com/in/saketh-jangala/' },
+    { icon: <XIcon />, url: 'https://x.com/saketh_jangala' },
+    { icon: <EmailIcon />, url: 'mailto:saketh.jangala@outlook.com' },
+  ];
+
   return (
     <HideOnScroll>
-      <AppBar 
-        elevation={scrolled ? 4 : 0} 
+      <AppBar
+        elevation={scrolled ? 4 : 0}
         sx={{
           backgroundColor: scrolled ? 'rgba(10, 25, 47, 0.85)' : 'transparent',
           backdropFilter: scrolled ? 'blur(10px)' : 'none',
@@ -59,35 +77,11 @@ const Header = () => {
           padding: '0 10%',
         }}
       >
-        <Toolbar sx={{ 
-          display: 'flex', 
+        <Toolbar sx={{
+          display: 'flex',
           justifyContent: 'space-between',
           padding: '1rem 0',
         }}>
-          <Typography 
-            variant="h6" 
-            component="div" 
-            sx={{ 
-              flexGrow: 1, 
-              fontWeight: 700,
-              background: 'linear-gradient(90deg, #64ffda, #00adb5)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              '&:hover': {
-                cursor: 'pointer'
-              }
-            }}
-          >
-            <ScrollLink 
-              to="home" 
-              smooth={true} 
-              duration={500} 
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              Saketh Jangala
-            </ScrollLink>
-          </Typography>
-
           {isMobile ? (
             <IconButton
               color="inherit"
@@ -99,7 +93,7 @@ const Header = () => {
               <MenuIcon />
             </IconButton>
           ) : (
-            <Box sx={{ display: 'flex', gap: '2rem' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
               {navItems.map((item) => (
                 <ScrollLink
                   key={item.name}
@@ -109,7 +103,7 @@ const Header = () => {
                   offset={-80}
                   style={{ textDecoration: 'none' }}
                 >
-                  <Button 
+                  <Button
                     color="inherit"
                     sx={{
                       position: 'relative',
@@ -135,8 +129,8 @@ const Header = () => {
                   </Button>
                 </ScrollLink>
               ))}
-              <Button 
-                variant="outlined" 
+              <Button
+                variant="outlined"
                 color="primary"
                 href="/resume.pdf"
                 target="_blank"
@@ -153,6 +147,22 @@ const Header = () => {
               >
                 Resume
               </Button>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 2 }}>
+                {socialLinks.map((social, idx) => (
+                  <IconButton
+                    key={idx}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ color: theme.palette.text.secondary, '&:hover': { color: theme.palette.primary.main } }}
+                  >
+                    {social.icon}
+                  </IconButton>
+                ))}
+              </Box>
+              <IconButton onClick={toggleTheme} sx={{ ml: 1 }}>
+                {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+              </IconButton>
             </Box>
           )}
         </Toolbar>
