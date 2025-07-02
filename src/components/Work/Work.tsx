@@ -167,9 +167,6 @@ const Work = () => {
                     transform: 'translateY(-5px)',
                     boxShadow: `0 10px 30px ${theme.palette.primary.main}40`,
                     borderColor: theme.palette.primary.main,
-                    '& .work-role': {
-                      color: theme.palette.primary.main,
-                    },
                     '& .timeline-dot': {
                       transform: 'scale(1.2)',
                       boxShadow: `0 0 0 4px ${theme.palette.background.default}, 0 0 0 7px ${theme.palette.primary.main}40`,
@@ -185,6 +182,9 @@ const Work = () => {
                   '&:active': {
                     transform: 'translateY(-2px)',
                   },
+                  '&[aria-expanded="true"] .work-role': {
+                    color: theme.palette.primary.main,
+                  }
                 }}
                 role="button"
                 aria-expanded={expandedExp === exp.id}
@@ -242,7 +242,6 @@ const Work = () => {
                         <Box>
                           <Typography 
                             variant="h3" 
-                            className="work-role"
                             sx={{ 
                               fontSize: '1.5rem', 
                               fontWeight: 600, 
