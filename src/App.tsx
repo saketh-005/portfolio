@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -24,29 +24,26 @@ import {
 import './App.css';
 
 // Theme
-const theme = createTheme({
+const getDesignTokens = (mode: 'light' | 'dark') => ({
   palette: {
-    mode: 'dark',
+    mode,
     primary: {
-      main: '#7c4dff',  // Deep purple
+      main: '#7c4dff',
       light: '#b47cff',
       dark: '#3f1dcb',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#00e5ff',  // Cyan
+      main: '#00e5ff',
       light: '#6effff',
       dark: '#00b2cc',
     },
-    background: {
-      default: '#121212',
-      paper: '#1e1e1e',
-    },
-    text: {
-      primary: '#ffffff',
-      secondary: '#b3b3b3',
-      disabled: '#757575',
-    },
+    background: mode === 'dark'
+      ? { default: '#121212', paper: '#1e1e1e' }
+      : { default: '#fafafa', paper: '#fff' },
+    text: mode === 'dark'
+      ? { primary: '#ffffff', secondary: '#b3b3b3', disabled: '#757575' }
+      : { primary: '#222', secondary: '#555', disabled: '#aaa' },
   },
   typography: {
     fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
@@ -66,21 +63,24 @@ const theme = createTheme({
     },
   },
   components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: '4px',
-          textTransform: 'none',
-          fontWeight: 500,
-          padding: '8px 24px',
-        },
-      },
-    },
+    // MuiButton: {
+    //   styleOverrides: {
+    //     root: {
+    //       borderRadius: '4px',
+    //       textTransform: 'none',
+    //       fontWeight: 500,
+    //       padding: '8px 24px',
+    //     },
+    //   },
+    // },
   },
 });
 
 function App() {
   const [sidebarMinimized, setSidebarMinimized] = useState(false);
+  const [mode, setMode] = useState<'light' | 'dark'>('dark');
+  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+  const toggleTheme = () => setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
 
   return (
     <ThemeProvider theme={theme}>
@@ -88,7 +88,7 @@ function App() {
       <Router>
         <AnimatePresence mode="wait">
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, minHeight: '100vh' }}>
-            <Sidebar minimized={sidebarMinimized} setMinimized={setSidebarMinimized} />
+            <Sidebar minimized={sidebarMinimized} setMinimized={setSidebarMinimized} mode={mode} toggleTheme={toggleTheme} />
             <Box
               component="main"
               sx={{
