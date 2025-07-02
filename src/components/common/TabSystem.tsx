@@ -47,28 +47,13 @@ const TabSystem: React.FC<TabSystemProps> = ({
     <Box 
       sx={{ 
         display: 'flex', 
-        justifyContent: centered ? 'center' : 'flex-start',
+        justifyContent: 'center',
         mb: 6,
-        '& .MuiTabs-indicator': {
-          height: '100%',
-          borderRadius: '50px',
-          backgroundColor: theme.palette.mode === 'dark' 
-            ? 'rgba(144, 202, 249, 0.2)' 
-            : 'rgba(25, 118, 210, 0.1)',
-        },
-        '& .MuiTab-root': {
-          minWidth: '120px',
-          textTransform: 'none',
-          fontWeight: 500,
-          fontSize: '0.9rem',
-          '&.Mui-selected': {
-            color: theme.palette.primary.main,
-          },
-        },
+        width: '100%',
       }}
     >
       <Paper 
-        elevation={0}
+        elevation={2}
         sx={{
           display: 'inline-flex',
           borderRadius: '50px',
@@ -77,19 +62,56 @@ const TabSystem: React.FC<TabSystemProps> = ({
           border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'}`,
           boxShadow: theme.shadows[1],
           width: fullWidth ? '100%' : 'auto',
+          maxWidth: '100%',
+          overflow: 'hidden',
+          '& .MuiTabs-root': {
+            minHeight: '48px',
+          },
+          '& .MuiTabs-scroller': {
+            overflow: 'auto !important',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+          },
         }}
       >
         <Tabs
           value={value}
           onChange={onChange}
-          variant={variant}
-          scrollButtons={scrollButtons}
-          allowScrollButtonsMobile={allowScrollButtonsMobile}
-          textColor="primary"
-          indicatorColor="primary"
+          variant="scrollable"
+          scrollButtons={false}
+          allowScrollButtonsMobile={true}
           sx={{
-            '& .MuiTabs-flexContainer': {
-              gap: 1,
+            '& .MuiTabs-indicator': {
+              height: '100%',
+              borderRadius: '50px',
+              backgroundColor: theme.palette.primary.light,
+              opacity: 0.1,
+            },
+            '& .MuiTab-root': {
+              textTransform: 'none',
+              fontWeight: 500,
+              fontSize: { xs: '0.85rem', sm: '0.95rem' },
+              minHeight: '40px',
+              minWidth: 'auto',
+              padding: { xs: '6px 16px', sm: '6px 20px' },
+              color: theme.palette.text.secondary,
+              whiteSpace: 'nowrap',
+              transition: 'all 0.2s ease',
+              '&.Mui-selected': {
+                color: theme.palette.primary.main,
+                fontWeight: 600,
+              },
+              '&:hover': {
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.action.hover,
+              },
+              '& .MuiSvgIcon-root': {
+                marginRight: '6px',
+                fontSize: { xs: '1rem', sm: '1.1rem' },
+              },
             },
           }}
         >

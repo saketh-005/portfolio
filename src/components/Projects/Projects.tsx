@@ -169,10 +169,10 @@ const Projects: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const tabs: TabItem[] = [
-    { value: 'all', label: 'All', icon: <AllInclusiveIcon fontSize="small" /> },
-    { value: 'web', label: 'Web', icon: <CodeIcon fontSize="small" /> },
-    { value: 'ai', label: 'AI/ML', icon: <CodeIcon fontSize="small" /> },
-    { value: 'mobile', label: 'Mobile', icon: <CodeIcon fontSize="small" /> },
+    { value: 'all', label: 'All Projects', icon: <AllInclusiveIcon /> },
+    { value: 'web', label: 'Web Apps', icon: <CodeIcon /> },
+    { value: 'ai', label: 'AI/ML', icon: <CodeIcon /> },
+    { value: 'mobile', label: 'Mobile Apps', icon: <CodeIcon /> },
   ];
 
   const filteredProjects = activeTab === 'all' 
@@ -208,18 +208,17 @@ const Projects: React.FC = () => {
       />
       
       <Box sx={{ 
-        display: 'flex', 
+        display: 'flex',
         justifyContent: 'center',
+        width: '100%',
         mb: 6,
-        mt: 4,
       }}>
-        <TabSystem
+        <TabSystem 
           value={activeTab}
           onChange={handleTabChange}
           tabs={tabs}
-          variant="scrollable"
-          scrollButtons="auto"
-          allowScrollButtonsMobile
+          centered={true}
+          fullWidth={isMobile}
         />
       </Box>
       
