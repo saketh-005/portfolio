@@ -13,7 +13,7 @@ import {
 import { motion } from 'framer-motion';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import TwitterIcon from '@mui/icons-material/Twitter';
+import XIcon from '@mui/icons-material/X';
 import EmailIcon from '@mui/icons-material/Email';
 import SectionHeader from '../common/SectionHeader';
 
@@ -117,9 +117,9 @@ const Contact = () => {
       label: 'LinkedIn'
     },
     { 
-      icon: <TwitterIcon fontSize="large" />, 
-      url: 'https://twitter.com/yourusername',
-      label: 'Twitter'
+      icon: <XIcon fontSize="large" />, 
+      url: 'https://x.com/saketh_jangala',
+      label: 'X (Twitter)'
     },
     { 
       icon: <EmailIcon fontSize="large" />, 

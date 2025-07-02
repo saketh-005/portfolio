@@ -374,43 +374,31 @@ const Work = () => {
                           </Box>
                         </Box>
 
-                        {exp.company === 'VitaData' && (
-                          <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              endIcon={<OpenInNewIcon />}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                window.open('https://vitadata.com', '_blank');
-                              }}
-                              sx={{
-                                textTransform: 'none',
-                                borderRadius: '6px',
-                                fontWeight: 500,
-                              }}
-                            >
-                              Visit Company Website
-                            </Button>
-                            <Button
-                              variant="contained"
-                              size="small"
-                              endIcon={<OpenInNewIcon />}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                // Add link to your resume or portfolio
-                                window.open('#', '_blank');
-                              }}
-                              sx={{
-                                textTransform: 'none',
-                                borderRadius: '6px',
-                                fontWeight: 500,
-                              }}
-                            >
-                              View Project Details
-                            </Button>
-                          </Box>
-                        )}
+                        {/* Offer Letter Button */}
+                        <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            size="small"
+                            endIcon={<OpenInNewIcon />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const offerLinks: { [key: string]: string } = {
+                                'VitaData': 'https://drive.google.com/file/d/1nJ6CtsKrqfN5c07Y0lECZ-yYpyGZ4S6x/view?usp=sharing',
+                                'Coding Junior': 'https://drive.google.com/file/d/1x6ceSb_vcHhw2huqsH26oW7JxJyJgghV/view?usp=sharing'
+                              };
+                              window.open(offerLinks[exp.company] || '#', '_blank');
+                            }}
+                            sx={{
+                              textTransform: 'none',
+                              '&:hover': {
+                                backgroundColor: `${theme.palette.primary.main}15`,
+                              }
+                            }}
+                          >
+                            View Offer Letter
+                          </Button>
+                        </Box>
                       </Paper>
                     </Box>
                   </Collapse>
