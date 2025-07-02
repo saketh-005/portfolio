@@ -631,16 +631,26 @@ const Carousel = ({ images }: { images: EventImage[] }) => {
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setStartX(e.touches[0].clientX);
+    const touch = e.touches[0];
+    setStartX(touch.clientX);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (startX === null) return;
     
-    const currentX = e.touches[0].clientX;
+    const touch = e.touches[0];
+    const currentX = touch.clientX;
     const diff = startX - currentX;
     
-    if (Math.abs(diff) > 50) { // Minimum swipe distance
+    // Prevent vertical scrolling when swiping horizontally
+    if (Math.abs(diff) > 10) {
+      e.preventDefault();
+    }
+    
+    // Minimum swipe distance (5% of viewport width)
+    const minSwipeDistance = window.innerWidth * 0.05;
+    
+    if (Math.abs(diff) > minSwipeDistance) {
       if (diff > 0) {
         nextSlide();
       } else {
@@ -650,12 +660,39 @@ const Carousel = ({ images }: { images: EventImage[] }) => {
     }
   };
 
-  // Auto-advance slides every 5 seconds
+  // Auto-advance slides every 5 seconds, but pause when not visible
   useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide();
-    }, 5000);
-    return () => clearInterval(timer);
+    let timer: NodeJS.Timeout;
+    let isVisible = true;
+
+    const handleVisibilityChange = () => {
+      isVisible = !document.hidden;
+      if (isVisible) {
+        startTimer();
+      } else {
+        clearTimeout(timer);
+      }
+    };
+
+    const startTimer = () => {
+      timer = setTimeout(() => {
+        if (isVisible) {
+          nextSlide();
+          startTimer();
+        }
+      }, 5000);
+    };
+
+    // Start the initial timer
+    startTimer();
+    
+    // Pause auto-advance when tab is not visible
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [currentIndex]);
 
   return (
@@ -666,9 +703,20 @@ const Carousel = ({ images }: { images: EventImage[] }) => {
         height: '100%',
         position: 'relative',
         overflow: 'hidden',
+        // Prevent text selection during swipe
+        userSelect: 'none',
+        // Improve touch response on iOS
+        WebkitTouchCallout: 'none',
+        // Prevent pull-to-refresh on mobile
+        overscrollBehavior: 'contain',
       }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
+      // Prevent default touch behavior that might interfere with swiping
+      onTouchEnd={(e) => e.preventDefault()}
+      // Add role for better accessibility
+      role="region"
+      aria-label="Image carousel"
     >
       {/* Navigation Arrows */}
       {!isMobile && (
@@ -679,6 +727,7 @@ const Carousel = ({ images }: { images: EventImage[] }) => {
               prevSlide();
             }}
             size="large"
+            aria-label="Previous slide"
             sx={{
               position: 'absolute',
               left: 8,
@@ -687,12 +736,23 @@ const Carousel = ({ images }: { images: EventImage[] }) => {
               zIndex: 2,
               backgroundColor: 'rgba(0, 0, 0, 0.5)',
               color: 'white',
+              width: 48,
+              height: 48,
               '&:hover': {
                 backgroundColor: 'rgba(0, 0, 0, 0.7)',
               },
+              // Ensure touch target is large enough
+              '& .MuiSvgIcon-root': {
+                fontSize: '2rem',
+              },
+              // Add focus styles for better accessibility
+              '&:focus-visible': {
+                outline: '2px solid white',
+                outlineOffset: '2px',
+              },
             }}
           >
-            <NavigateBeforeIcon />
+            <NavigateBeforeIcon fontSize="inherit" />
           </IconButton>
           <IconButton
             onClick={(e) => {
@@ -700,6 +760,7 @@ const Carousel = ({ images }: { images: EventImage[] }) => {
               nextSlide();
             }}
             size="large"
+            aria-label="Next slide"
             sx={{
               position: 'absolute',
               right: 8,
@@ -708,12 +769,23 @@ const Carousel = ({ images }: { images: EventImage[] }) => {
               zIndex: 2,
               backgroundColor: 'rgba(0, 0, 0, 0.5)',
               color: 'white',
+              width: 48,
+              height: 48,
               '&:hover': {
                 backgroundColor: 'rgba(0, 0, 0, 0.7)',
               },
+              // Ensure touch target is large enough
+              '& .MuiSvgIcon-root': {
+                fontSize: '2rem',
+              },
+              // Add focus styles for better accessibility
+              '&:focus-visible': {
+                outline: '2px solid white',
+                outlineOffset: '2px',
+              },
             }}
           >
-            <NavigateNextIcon />
+            <NavigateNextIcon fontSize="inherit" />
           </IconButton>
         </>
       )}
@@ -775,28 +847,51 @@ const Carousel = ({ images }: { images: EventImage[] }) => {
         <Box
           sx={{
             position: 'absolute',
-            bottom: 8,
+            bottom: 16,
             left: 0,
             right: 0,
             display: 'flex',
             justifyContent: 'center',
-            gap: 1,
+            gap: 1.5,
+            py: 1,
           }}
+          role="tablist"
+          aria-label="Slide indicators"
         >
           {images.map((_, index) => (
             <Box
               key={index}
               onClick={() => goToSlide(index)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  goToSlide(index);
+                }
+              }}
+              aria-label={`Go to slide ${index + 1} of ${images.length}`}
+              aria-selected={currentIndex === index}
               sx={{
-                width: 8,
-                height: 8,
+                position: 'relative',
+                width: 10,
+                height: 10,
                 borderRadius: '50%',
-                backgroundColor: currentIndex === index ? 'primary.main' : 'action.disabled',
+                bgcolor: currentIndex === index ? 'primary.main' : 'action.disabled',
                 cursor: 'pointer',
-                transition: 'background-color 0.3s',
-                '&:hover': {
-                  backgroundColor: 'primary.main',
-                  opacity: 0.7,
+                transition: 'all 0.3s ease',
+                '&:hover, &:focus-visible': {
+                  transform: 'scale(1.3)',
+                  outline: 'none',
+                },
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%',
+                  transform: 'translate(-7px, -7px)',
+                  backgroundColor: 'transparent',
                 },
               }}
             />

@@ -1,3 +1,16 @@
+html {
+  /* Improve touch responsiveness */
+  touch-action: manipulation;
+  /* Smooth scrolling for touch devices */
+  -webkit-overflow-scrolling: touch;
+  /* Prevent text size adjustment */
+  -webkit-text-size-adjust: 100%;
+  /* Optimize font rendering */
+  text-rendering: optimizeLegibility;
+  /* Prevent tap highlight */
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,6 +18,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent horizontal scroll */
+  overflow-x: hidden;
+  /* Improve text rendering */
+  text-rendering: optimizeLegibility;
 }
 
 code {
