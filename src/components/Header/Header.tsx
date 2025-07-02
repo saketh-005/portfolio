@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton, useScrollTrigger, Slide, Box, useTheme, useMediaQuery } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link as ScrollLink } from 'react-scroll';
@@ -59,6 +59,25 @@ const Header: React.FC<HeaderProps> = ({ mode, toggleTheme }) => {
     { name: 'Contact', to: 'contact' },
   ];
 
+  // Notch system state
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const navRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [notchStyle, setNotchStyle] = useState({ left: 0, width: 0 });
+
+  // Update notch position on hover/active
+  useEffect(() => {
+    const idx = hoveredIdx !== null ? hoveredIdx : activeIdx;
+    const ref = navRefs.current[idx];
+    if (ref) {
+      const rect = ref.getBoundingClientRect();
+      const parentRect = ref.parentElement?.getBoundingClientRect();
+      if (parentRect) {
+        setNotchStyle({ left: rect.left - parentRect.left, width: rect.width });
+      }
+    }
+  }, [hoveredIdx, activeIdx]);
+
   const socialLinks = [
     { icon: <GitHubIcon />, url: 'https://github.com/saketh-005' },
     { icon: <LinkedInIcon />, url: 'https://www.linkedin.com/in/saketh-jangala/' },
@@ -67,107 +86,94 @@ const Header: React.FC<HeaderProps> = ({ mode, toggleTheme }) => {
   ];
 
   return (
-    <HideOnScroll>
-      <AppBar
-        elevation={scrolled ? 4 : 0}
+    <AppBar
+      elevation={0}
+      sx={{
+        background: 'none',
+        boxShadow: 'none',
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        top: 0,
+        zIndex: 1200,
+      }}
+    >
+      <Box
         sx={{
-          backgroundColor: scrolled ? 'rgba(10, 25, 47, 0.85)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(10px)' : 'none',
-          transition: 'all 0.3s ease-in-out',
-          padding: '0 10%',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          mt: 1.5,
         }}
       >
-        <Toolbar sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          padding: '1rem 0',
-        }}>
-          {isMobile ? (
-            <IconButton
+        <Box
+          sx={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            bgcolor: 'rgba(30,30,40,0.65)',
+            borderRadius: 999,
+            boxShadow: '0 4px 24px 0 rgba(31, 38, 135, 0.12)',
+            px: 2,
+            py: 0.5,
+            minHeight: 38,
+            minWidth: 320,
+            maxWidth: '90vw',
+            gap: 1,
+            backdropFilter: 'blur(12px)',
+            border: '1.5px solid rgba(255,255,255,0.13)',
+          }}
+        >
+          {/* Notch highlight */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 3,
+              height: 'calc(100% - 6px)',
+              borderRadius: 999,
+              bgcolor: 'primary.main',
+              opacity: 0.13,
+              zIndex: 0,
+              transition: 'left 0.3s cubic-bezier(.68,-0.55,.27,1.55), width 0.3s cubic-bezier(.68,-0.55,.27,1.55)',
+              pointerEvents: 'none',
+              ...notchStyle,
+            }}
+          />
+          {/* Nav links */}
+          {navItems.map((item, idx) => (
+            <Button
+              key={item.name}
+              ref={el => { navRefs.current[idx] = el; return undefined; }}
               color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { md: 'none' } }}
+              sx={{
+                zIndex: 1,
+                fontWeight: 600,
+                fontSize: '1rem',
+                px: 2,
+                py: 0.5,
+                borderRadius: 999,
+                color: activeIdx === idx ? 'primary.main' : 'text.primary',
+                transition: 'color 0.2s',
+                minWidth: 0,
+                background: 'none',
+              }}
+              onMouseEnter={() => setHoveredIdx(idx)}
+              onMouseLeave={() => setHoveredIdx(null)}
+              onClick={() => {
+                setActiveIdx(idx);
+                const el = document.getElementById(item.to);
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
             >
-              <MenuIcon />
-            </IconButton>
-          ) : (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-              {navItems.map((item) => (
-                <ScrollLink
-                  key={item.name}
-                  to={item.to}
-                  smooth={true}
-                  duration={500}
-                  offset={-80}
-                  style={{ textDecoration: 'none' }}
-                >
-                  <Button
-                    color="inherit"
-                    sx={{
-                      position: 'relative',
-                      '&:after': {
-                        content: '""',
-                        position: 'absolute',
-                        width: '0',
-                        height: '2px',
-                        bottom: '0',
-                        left: '50%',
-                        backgroundColor: theme.palette.primary.main,
-                        transition: 'all 0.3s ease-in-out',
-                        transform: 'translateX(-50%)',
-                      },
-                      '&:hover:after': {
-                        width: '100%',
-                      },
-                      color: 'text.primary',
-                      fontWeight: 500,
-                    }}
-                  >
-                    <span style={{ color: theme.palette.primary.main }}>0{navItems.indexOf(item) + 1}.</span> {item.name}
-                  </Button>
-                </ScrollLink>
-              ))}
-              <Button
-                variant="outlined"
-                color="primary"
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  border: `1px solid ${theme.palette.primary.main}`,
-                  color: theme.palette.primary.main,
-                  '&:hover': {
-                    backgroundColor: 'rgba(100, 255, 218, 0.1)',
-                    border: `1px solid ${theme.palette.primary.main}`,
-                  },
-                  marginLeft: '1rem',
-                }}
-              >
-                Resume
-              </Button>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 2 }}>
-                {socialLinks.map((social, idx) => (
-                  <IconButton
-                    key={idx}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    sx={{ color: theme.palette.text.secondary, '&:hover': { color: theme.palette.primary.main } }}
-                  >
-                    {social.icon}
-                  </IconButton>
-                ))}
-              </Box>
-              <IconButton onClick={toggleTheme} sx={{ ml: 1 }}>
-                {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-              </IconButton>
-            </Box>
-          )}
-        </Toolbar>
-      </AppBar>
-    </HideOnScroll>
+              {item.name}
+            </Button>
+          ))}
+        </Box>
+      </Box>
+    </AppBar>
   );
 };
 
