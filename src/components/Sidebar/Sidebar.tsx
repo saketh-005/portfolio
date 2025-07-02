@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Avatar, 
-  IconButton, 
-  useTheme, 
-  useMediaQuery, 
+import {
+  Box,
+  Typography,
+  Avatar,
+  IconButton,
+  useTheme,
+  useMediaQuery,
   Drawer,
   styled,
   Theme,
@@ -21,6 +21,8 @@ import XIcon from '@mui/icons-material/X';
 import EmailIcon from '@mui/icons-material/Email';
 import CodeIcon from '@mui/icons-material/Code';
 import GetAppIcon from '@mui/icons-material/GetApp';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 // Styled Components
 const NavLink = styled('a')(({ theme }: { theme: Theme }) => ({
@@ -66,7 +68,12 @@ interface SocialLink {
   url: string;
 }
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  minimized: boolean;
+  setMinimized: (minimized: boolean) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ minimized, setMinimized }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -74,6 +81,10 @@ const Sidebar: React.FC = () => {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleDesktopMinimize = () => {
+    setMinimized(!minimized);
   };
 
   const handleResumeClick = (e: React.MouseEvent) => {
@@ -99,8 +110,21 @@ const Sidebar: React.FC = () => {
     { icon: <EmailIcon />, url: 'mailto:saketh.jangala@outlook.com' },
   ];
 
-  const drawerContent = (
+  const drawerContent = (minimized: boolean = false) => (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* Desktop Minimize Button */}
+      <Box
+        sx={{
+          display: { xs: 'none', md: 'flex' },
+          justifyContent: minimized ? 'center' : 'flex-end',
+          alignItems: 'center',
+          mb: 2,
+        }}
+      >
+        <IconButton onClick={handleDesktopMinimize} size="small">
+          {minimized ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+        </IconButton>
+      </Box>
       {/* Mobile Header */}
       <Box
         sx={{
@@ -123,7 +147,7 @@ const Sidebar: React.FC = () => {
           <CloseIcon />
         </IconButton>
       </Box>
-      
+
       {/* Profile Section */}
       <Box sx={{ textAlign: 'center', mb: 4, flexShrink: 0 }}>
         <motion.div
@@ -134,54 +158,58 @@ const Sidebar: React.FC = () => {
             src="/images/profile-photo.jpeg"
             alt="Saketh Jangala"
             sx={{
-              width: { xs: 100, md: 150 },
-              height: { xs: 100, md: 150 },
+              width: { xs: 100, md: minimized ? 48 : 150 },
+              height: { xs: 100, md: minimized ? 48 : 150 },
               margin: '0 auto 1rem',
               border: `3px solid ${theme.palette.primary.main}`,
               boxShadow: `0 0 20px ${theme.palette.primary.main}40`,
               objectFit: 'cover',
+              transition: 'width 0.3s, height 0.3s',
             }}
           />
         </motion.div>
-        <Typography variant="h5" fontWeight={600} gutterBottom>
-          Saketh Jangala
-        </Typography>
-        <Typography 
-          variant="subtitle1" 
-          color="primary" 
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            gap: '0.5rem',
-            mb: 2,
-            fontSize: { xs: '0.9rem', md: '1rem' }
-          }}
-        >
-          <CodeIcon sx={{ fontSize: '1rem', mr: 0.5 }} /> Computer Science Student
-        </Typography>
-        
-        {/* Social Links */}
-        <Box sx={{ display: 'flex', gap: '1rem', justifyContent: 'center', mb: 3 }}>
-          {socialLinks.map((social: SocialLink, index: number) => (
-            <IconButton 
-              key={index} 
-              href={social.url} 
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ 
-                color: theme.palette.text.secondary,
-                '&:hover': {
-                  color: theme.palette.primary.main,
-                  transform: 'translateY(-2px)',
-                },
-                transition: 'all 0.3s ease',
+        {!minimized && (
+          <>
+            <Typography variant="h5" fontWeight={600} gutterBottom>
+              Saketh Jangala
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              color="primary"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                mb: 2,
+                fontSize: { xs: '0.9rem', md: '1rem' }
               }}
             >
-              {social.icon}
-            </IconButton>
-          ))}
-        </Box>
+              <CodeIcon sx={{ fontSize: '1rem', mr: 0.5 }} /> Computer Science Student
+            </Typography>
+            {/* Social Links */}
+            <Box sx={{ display: 'flex', gap: '1rem', justifyContent: 'center', mb: 3 }}>
+              {socialLinks.map((social: SocialLink, index: number) => (
+                <IconButton
+                  key={index}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    '&:hover': {
+                      color: theme.palette.primary.main,
+                      transform: 'translateY(-2px)',
+                    },
+                    transition: 'all 0.3s ease',
+                  }}
+                >
+                  {social.icon}
+                </IconButton>
+              ))}
+            </Box>
+          </>
+        )}
       </Box>
 
       {/* Navigation */}
@@ -193,12 +221,13 @@ const Sidebar: React.FC = () => {
             whileTap={{ scale: 0.98 }}
             style={{ marginBottom: '0.5rem' }}
           >
-            <NavLink 
+            <NavLink
               href={`#${item.name.toLowerCase()}`}
               onClick={() => isMobile && handleDrawerToggle()}
+              sx={{ justifyContent: minimized ? 'center' : 'flex-start', padding: minimized ? '0.75rem' : '0.75rem 1rem' }}
             >
-              <span style={{ marginRight: '12px', fontSize: '1.25rem' }}>{item.icon}</span>
-              <Typography variant="body1">{item.name}</Typography>
+              <span style={{ marginRight: minimized ? 0 : '12px', fontSize: '1.25rem' }}>{item.icon}</span>
+              {!minimized && <Typography variant="body1">{item.name}</Typography>}
             </NavLink>
           </motion.div>
         ))}
@@ -206,26 +235,28 @@ const Sidebar: React.FC = () => {
 
       {/* Resume Button */}
       <Box sx={{ mt: 'auto', pt: 2, borderTop: `1px solid ${theme.palette.divider}`, width: '100%' }}>
-        <ResumeButton
-          href="#"
-          onClick={handleResumeClick}
-          sx={{ width: '100%' }}
-        >
-          <GetAppIcon />
-          <span>Download Resume</span>
-        </ResumeButton>
-        <Snackbar 
-          open={showResumeAlert} 
-          autoHideDuration={6000} 
+        {!minimized && (
+          <ResumeButton
+            href="#"
+            onClick={handleResumeClick}
+            sx={{ width: '100%' }}
+          >
+            <GetAppIcon />
+            <span>Download Resume</span>
+          </ResumeButton>
+        )}
+        <Snackbar
+          open={showResumeAlert}
+          autoHideDuration={6000}
           onClose={() => setShowResumeAlert(false)}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
-          <Alert 
-            onClose={() => setShowResumeAlert(false)} 
+          <Alert
+            onClose={() => setShowResumeAlert(false)}
             severity="info"
             sx={{ width: '100%' }}
           >
-            Thank you for your interest! My resume will be available soon. 
+            Thank you for your interest! My resume will be available soon.
             Please feel free to connect with me on LinkedIn or via email in the meantime.
           </Alert>
         </Snackbar>
@@ -271,7 +302,7 @@ const Sidebar: React.FC = () => {
       {/* Desktop Sidebar */}
       <Box
         sx={{
-          width: { xs: 0, md: '300px' },
+          width: { xs: 0, md: minimized ? '60px' : '300px' },
           flexShrink: 0,
           display: { xs: 'none', md: 'block' },
           height: '100vh',
@@ -280,12 +311,13 @@ const Sidebar: React.FC = () => {
           top: 0,
           backgroundColor: theme.palette.background.paper,
           borderRight: `1px solid ${theme.palette.divider}`,
-          padding: '2rem 1.5rem',
+          padding: minimized ? '1rem 0.5rem' : '2rem 1.5rem',
           overflowY: 'auto',
           zIndex: 1000,
+          transition: 'width 0.3s, padding 0.3s',
         }}
       >
-        {drawerContent}
+        {drawerContent(minimized)}
       </Box>
 
       {/* Mobile Drawer */}
@@ -306,7 +338,7 @@ const Sidebar: React.FC = () => {
           },
         }}
       >
-        {drawerContent}
+        {drawerContent()}
       </Drawer>
     </>
   );

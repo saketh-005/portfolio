@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -80,20 +80,22 @@ const theme = createTheme({
 });
 
 function App() {
+  const [sidebarMinimized, setSidebarMinimized] = useState(false);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <AnimatePresence mode="wait">
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, minHeight: '100vh' }}>
-            <Sidebar />
-            <Box 
-              component="main" 
-              sx={{ 
-                flexGrow: 1, 
-                marginLeft: { xs: 0, md: '300px' },
+            <Sidebar minimized={sidebarMinimized} setMinimized={setSidebarMinimized} />
+            <Box
+              component="main"
+              sx={{
+                flexGrow: 1,
+                marginLeft: { xs: 0, md: sidebarMinimized ? '60px' : '300px' },
                 marginTop: { xs: '80px', md: 0 },
-                width: { xs: '100%', md: 'calc(100% - 300px)' },
+                width: { xs: '100%', md: sidebarMinimized ? 'calc(100% - 60px)' : 'calc(100% - 300px)' },
                 padding: { xs: '1rem', sm: '1.5rem', md: '2rem' },
                 maxWidth: '100%',
                 overflowX: 'hidden',
