@@ -39,7 +39,7 @@ const getDesignTokens = (mode: 'light' | 'dark') => ({
       dark: '#00b2cc',
     },
     background: mode === 'dark'
-      ? { default: '#121212', paper: '#1e1e1e' }
+      ? { default: '#0a0a0a', paper: '#121212' }
       : { default: '#fafafa', paper: '#fff' },
     text: mode === 'dark'
       ? { primary: '#ffffff', secondary: '#b3b3b3', disabled: '#757575' }
