@@ -7,6 +7,7 @@ import { AnimatePresence } from 'framer-motion';
 
 // Components
 import Sidebar from './components/Sidebar/Sidebar';
+import Header from './components/Header/Header';
 import {
   Home,
   About,
@@ -87,15 +88,20 @@ function App() {
       <CssBaseline />
       <Router>
         <AnimatePresence mode="wait">
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, minHeight: '100vh' }}>
-            <Sidebar minimized={sidebarMinimized} setMinimized={setSidebarMinimized} mode={mode} toggleTheme={toggleTheme} />
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            {/* Topbar/Header for desktop, Sidebar for mobile */}
+            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+              <Header mode={mode} toggleTheme={toggleTheme} />
+            </Box>
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+              <Sidebar minimized={sidebarMinimized} setMinimized={setSidebarMinimized} mode={mode} toggleTheme={toggleTheme} />
+            </Box>
             <Box
               component="main"
               sx={{
                 flexGrow: 1,
-                marginLeft: { xs: 0, md: sidebarMinimized ? '60px' : '300px' },
-                marginTop: { xs: '80px', md: 0 },
-                width: { xs: '100%', md: sidebarMinimized ? 'calc(100% - 60px)' : 'calc(100% - 300px)' },
+                marginTop: { xs: '80px', md: '80px' },
+                width: '100%',
                 padding: { xs: '1rem', sm: '1.5rem', md: '2rem' },
                 maxWidth: '100%',
                 overflowX: 'hidden',
