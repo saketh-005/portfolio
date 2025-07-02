@@ -1,7 +1,22 @@
-import React from 'react';
-import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { 
+  Box, 
+  Typography, 
+  useTheme, 
+  useMediaQuery, 
+  Paper, 
+  Button, 
+  Chip,
+  IconButton,
+  Collapse,
+  Divider
+} from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
 import SectionHeader from '../common/SectionHeader';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 interface Experience {
   id: number;
@@ -73,6 +88,11 @@ const sortedExperiences = [...experiences].sort((a, b) => {
 const Work = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [expandedExp, setExpandedExp] = useState<number | null>(null);
+
+  const toggleExpand = (id: number) => {
+    setExpandedExp(expandedExp === id ? null : id);
+  };
 
   return (
     <Box
@@ -134,6 +154,7 @@ const Work = () => {
               }}
             >
               <Box
+                onClick={() => toggleExpand(exp.id)}
                 sx={{
                   backgroundColor: theme.palette.background.paper,
                   borderRadius: '8px',
@@ -141,6 +162,7 @@ const Work = () => {
                   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
                   border: `1px solid ${theme.palette.divider}`,
                   transition: 'all 0.3s ease-in-out',
+                  cursor: 'pointer',
                   '&:hover': {
                     transform: 'translateY(-5px)',
                     boxShadow: `0 10px 30px ${theme.palette.primary.main}40`,
@@ -160,6 +182,19 @@ const Work = () => {
                       color: theme.palette.primary.main,
                     }
                   },
+                  '&:active': {
+                    transform: 'translateY(-2px)',
+                  },
+                }}
+                role="button"
+                aria-expanded={expandedExp === exp.id}
+                aria-controls={`work-expand-${exp.id}`}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleExpand(exp.id);
+                  }
                 }}
               >
                 {/* Timeline dot */}
@@ -202,60 +237,184 @@ const Work = () => {
                         }}
                       />
                     )}
-                    <Box>
-                      <Typography 
-                        variant="h3" 
-                        className="work-role"
-                        sx={{ 
-                          fontSize: '1.5rem', 
-                          fontWeight: 600, 
-                          marginBottom: '0.25rem',
-                          transition: 'color 0.3s ease-in-out',
-                          color: exp.isCurrent ? theme.palette.text.primary : theme.palette.text.secondary,
-                        }}
-                      >
-                        {exp.role}
-                      </Typography>
-                      <Typography 
-                        variant="subtitle1" 
-                        color={exp.isCurrent ? 'primary' : 'text.secondary'} 
-                        sx={{ marginBottom: 0 }}
-                      >
-                        {exp.company} • {exp.duration}
-                      </Typography>
+                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+                        <Box>
+                          <Typography 
+                            variant="h3" 
+                            className="work-role"
+                            sx={{ 
+                              fontSize: '1.5rem', 
+                              fontWeight: 600, 
+                              marginBottom: '0.25rem',
+                              transition: 'color 0.3s ease-in-out',
+                              color: expandedExp === exp.id 
+                                ? theme.palette.primary.main 
+                                : exp.isCurrent 
+                                  ? theme.palette.text.primary 
+                                  : theme.palette.text.secondary,
+                            }}
+                          >
+                            {exp.role}
+                          </Typography>
+                          <Typography 
+                            variant="subtitle1" 
+                            color={exp.isCurrent ? 'primary' : 'text.secondary'} 
+                            sx={{ marginBottom: 0 }}
+                          >
+                            {exp.company} • {exp.duration}
+                          </Typography>
+                        </Box>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleExpand(exp.id);
+                          }}
+                          aria-label={expandedExp === exp.id ? 'Collapse details' : 'Expand details'}
+                          sx={{
+                            color: 'text.secondary',
+                            '&:hover, &:focus': {
+                              color: 'primary.main',
+                              backgroundColor: 'transparent',
+                            },
+                            transition: 'all 0.3s ease',
+                            pointerEvents: 'auto', // Ensure the button is clickable
+                          }}
+                        >
+                          {expandedExp === exp.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                        </IconButton>
+                      </Box>
                     </Box>
                   </Box>
 
-                  <Box 
-                    component="ul" 
-                    className="work-description"
-                    sx={{ 
-                      paddingLeft: '1.5rem', 
-                      marginBottom: '1.5rem',
-                      '& li::marker': {
-                        color: theme.palette.text.secondary,
-                        transition: 'color 0.3s ease-in-out',
-                      }
-                    }}
+                  <Collapse 
+                    in={expandedExp === exp.id} 
+                    timeout="auto" 
+                    unmountOnExit
+                    id={`work-expand-${exp.id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    sx={{ pointerEvents: 'auto' }} // Allow interaction inside the expanded content
                   >
-                    {exp.description.map((item, i) => (
-                      <Typography 
-                        key={i} 
-                        component="li" 
-                        variant="body1" 
-                        sx={{ 
-                          marginBottom: '0.5rem',
-                          color: exp.isCurrent ? theme.palette.text.secondary : theme.palette.text.disabled,
-                          '&::marker': {
-                            color: theme.palette.primary.main,
-                          },
-                          transition: 'color 0.3s ease-in-out',
+                    <Box sx={{ mt: 2, mb: 2 }}>
+                      <Paper 
+                        elevation={0}
+                        sx={{
+                          p: 3,
+                          borderRadius: 2,
+                          backgroundColor: theme.palette.mode === 'dark' 
+                            ? 'rgba(255, 255, 255, 0.03)' 
+                            : 'rgba(0, 0, 0, 0.02)',
+                          border: `1px solid ${theme.palette.divider}`,
                         }}
                       >
-                        {item}
-                      </Typography>
-                    ))}
-                  </Box>
+                        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: 'text.primary' }}>
+                          Role Details
+                        </Typography>
+                        
+                        <Box 
+                          component="ul" 
+                          className="work-description"
+                          sx={{ 
+                            paddingLeft: '1.5rem', 
+                            marginBottom: '1.5rem',
+                            '& li::marker': {
+                              color: theme.palette.primary.main,
+                              transition: 'color 0.3s ease-in-out',
+                            }
+                          }}
+                        >
+                          {exp.description.map((item, i) => (
+                            <Typography 
+                              key={i} 
+                              component="li" 
+                              variant="body1" 
+                              sx={{ 
+                                marginBottom: '0.75rem',
+                                color: 'text.secondary',
+                                lineHeight: 1.6,
+                                '&::marker': {
+                                  color: theme.palette.primary.main,
+                                },
+                              }}
+                            >
+                              {item}
+                            </Typography>
+                          ))}
+                        </Box>
+
+                        <Divider sx={{ my: 2 }} />
+
+                        <Box>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: 'text.primary' }}>
+                            Key Technologies & Skills:
+                          </Typography>
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                            {exp.skills.map((skill) => (
+                              <Chip
+                                key={skill}
+                                label={skill}
+                                size="small"
+                                variant="outlined"
+                                sx={{
+                                  backgroundColor: theme.palette.mode === 'dark' 
+                                    ? 'rgba(255, 255, 255, 0.08)'
+                                    : 'rgba(0, 0, 0, 0.03)',
+                                  borderColor: theme.palette.divider,
+                                  color: 'text.secondary',
+                                  '& .MuiChip-label': {
+                                    px: 1.5,
+                                    py: 0.5,
+                                  },
+                                  '&:hover': {
+                                    borderColor: theme.palette.primary.main,
+                                    color: theme.palette.primary.main,
+                                  },
+                                }}
+                              />
+                            ))}
+                          </Box>
+                        </Box>
+
+                        {exp.company === 'VitaData' && (
+                          <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              endIcon={<OpenInNewIcon />}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open('https://vitadata.com', '_blank');
+                              }}
+                              sx={{
+                                textTransform: 'none',
+                                borderRadius: '6px',
+                                fontWeight: 500,
+                              }}
+                            >
+                              Visit Company Website
+                            </Button>
+                            <Button
+                              variant="contained"
+                              size="small"
+                              endIcon={<OpenInNewIcon />}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Add link to your resume or portfolio
+                                window.open('#', '_blank');
+                              }}
+                              sx={{
+                                textTransform: 'none',
+                                borderRadius: '6px',
+                                fontWeight: 500,
+                              }}
+                            >
+                              View Project Details
+                            </Button>
+                          </Box>
+                        )}
+                      </Paper>
+                    </Box>
+                  </Collapse>
 
                   <Box 
                     className="work-skills"
