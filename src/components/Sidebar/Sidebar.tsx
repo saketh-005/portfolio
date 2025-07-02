@@ -8,7 +8,9 @@ import {
   useMediaQuery, 
   Drawer,
   styled,
-  Theme
+  Theme,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -68,9 +70,15 @@ const Sidebar: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
-  
+  const [showResumeAlert, setShowResumeAlert] = useState(false);
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleResumeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowResumeAlert(true);
   };
 
   const navItems: NavItem[] = [
@@ -197,21 +205,30 @@ const Sidebar: React.FC = () => {
       </Box>
 
       {/* Resume Button */}
-      <Box sx={{ mt: 'auto', pt: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          style={{ width: '100%' }}
+      <Box sx={{ mt: 'auto', pt: 2, borderTop: `1px solid ${theme.palette.divider}`, width: '100%' }}>
+        <ResumeButton
+          href="#"
+          onClick={handleResumeClick}
+          sx={{ width: '100%' }}
         >
-          <ResumeButton
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+          <GetAppIcon />
+          <span>Download Resume</span>
+        </ResumeButton>
+        <Snackbar 
+          open={showResumeAlert} 
+          autoHideDuration={6000} 
+          onClose={() => setShowResumeAlert(false)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert 
+            onClose={() => setShowResumeAlert(false)} 
+            severity="info"
+            sx={{ width: '100%' }}
           >
-            <GetAppIcon />
-            <span>Download Resume</span>
-          </ResumeButton>
-        </motion.div>
+            Thank you for your interest! My resume will be available soon. 
+            Please feel free to connect with me on LinkedIn or via email in the meantime.
+          </Alert>
+        </Snackbar>
       </Box>
     </Box>
   );
