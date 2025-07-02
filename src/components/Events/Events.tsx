@@ -101,7 +101,7 @@ const events: Event[] = [
       },
       { 
         url: 'https://drive.google.com/thumbnail?id=1Ue9mBHhO_oiEUZFEh_D7TWmDVzQbmFUu&sz=w1000', 
-        description: 'Team Photo with Organizers' 
+        description: 'With the organizers after receiving our Hackathon Winner certificates' 
       }
     ],
     projectUrls: [
@@ -140,7 +140,7 @@ const events: Event[] = [
       },
       {
         url: 'https://drive.google.com/thumbnail?id=1Ue9mBHhO_oiEUZFEh_D7TWmDVzQbmFUu&sz=w1000',
-        description: 'Hackathon Certificate of Completion'
+        description: 'Hackathon Winner Certificate by organizers'
       },
     ],
     materialsUrl: 'https://drive.google.com/drive/folders/1BKQhSDXTvxyN1dXwsPtODaJKIOf93f9s?usp=sharing',
