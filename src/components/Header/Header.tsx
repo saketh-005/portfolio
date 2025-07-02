@@ -112,7 +112,7 @@ const Header: React.FC<HeaderProps> = ({ mode, toggleTheme }) => {
             position: 'relative',
             display: 'flex',
             alignItems: 'center',
-            bgcolor: 'rgba(30,30,40,0.65)',
+            bgcolor: 'rgba(255,255,255,0.20)',
             borderRadius: 999,
             boxShadow: '0 4px 24px 0 rgba(31, 38, 135, 0.12)',
             px: 2,
@@ -122,7 +122,7 @@ const Header: React.FC<HeaderProps> = ({ mode, toggleTheme }) => {
             maxWidth: '90vw',
             gap: 1,
             backdropFilter: 'blur(12px)',
-            border: '1.5px solid rgba(255,255,255,0.13)',
+            border: '1.5px solid rgba(255,255,255,0.25)',
           }}
         >
           {/* Notch highlight */}
